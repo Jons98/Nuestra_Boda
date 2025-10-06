@@ -171,9 +171,13 @@
   </section>
 
   <!-- Botón flotante música -->
-  <button class="btn-musica" onclick="toggleMusica()">
-    🎵
-  </button>
+  <button class="btn-musica" id="btnMusica">
+	🎵
+	</button>
+
+	<audio id="cancion" loop preload="auto">
+	<source src="cancion.mp3" type="audio/mpeg">
+	</audio>
   
     <!-- Modal Confirmación -->
   <div id="modalConfirmacion">
@@ -207,10 +211,25 @@
 
     // ----------- Música (NO TOCAR) -----------
     const cancion = document.getElementById("cancion");
-    function toggleMusica() {
-      if (cancion.paused) cancion.play();
-      else cancion.pause();
+  const btnMusica = document.getElementById("btnMusica");
+
+  // 👉 Definí acá en qué momento empieza la canción (en segundos)
+  const inicioMusica = 17; // por ejemplo: empieza desde el segundo 30
+
+  btnMusica.addEventListener("click", async () => {
+    try {
+      if (cancion.paused) {
+        cancion.currentTime = inicioMusica; // arranca desde el segundo que elijas
+        await cancion.play();
+        btnMusica.textContent = "🔊"; // cambia icono al reproducir
+      } else {
+        cancion.pause();
+        btnMusica.textContent = "🎵"; // cambia icono al pausar
+      }
+    } catch (error) {
+      console.error("Error al reproducir la canción:", error);
     }
+  });
 
     // ----------- Firebase Integrado -----------
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
@@ -378,3 +397,4 @@
 
 </body>
 </html>
+
