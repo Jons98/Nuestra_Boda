@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invitación de Boda</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Great Vibes', sans-serif;
+      color: #960018;
+      text-align: center;
+    }
+
+    section {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+
+    /* Fondos */
+    #fondo1 { background-image: url("fondo1.png"); }
+    #fondo2 { background-image: url("fondo2.png"); }
+    #fondo3 { background-image: url("fondo3.png"); }
+    #fondo4 { background-image: url("fondo4.png"); }
+
+    /* Elementos dinámicos */
+    #contador {
+      font-size: 24px;
+      font-weight: bold;
+      position: absolute;
+    }
+
+    #nombreInvitado {
+      font-size: 20px;
+      font-weight: bold;
+      position: absolute;
+    }
+
+    .boton {
+      background: rgba(255, 255, 255, 0.85);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: absolute;
+    }
+
+    .boton:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+
+    /* Botón flotante música */
+    .btn-musica {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.8);
+      border: none;
+      border-radius: 50%;
+      padding: 12px;
+      cursor: pointer;
+      z-index: 999;
+    }
+
+    .btn-musica img {
+      width: 22px;
+      height: 22px;
+    }
+	
+	/* Modal confirmación */
+    #modalConfirmacion {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #modalContenido {
+      background: white;
+      color: black;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      width: 280px;
+    }
+
+    select {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+	
+	#mensajeBienvenida {
+	  font-size: 20px;
+	  font-weight: bold;
+	  position: absolute;
+	  color: #960018;
+	}
+
+    button.modal-btn {
+      margin-top: 15px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #960018;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Responsive: si necesitás ajustar más, lo hacemos por media queries */
+    @media (max-width: 768px) {
+      #contador { font-size: 18px; }
+      #nombreInvitado { font-size: 16px; }
+      .boton { font-size: 14px; padding: 8px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fondo1 -->
+  <section id="fondo1"></section>
+
+  <!-- Fondo2 -->
+  <section id="fondo2">
+	<div id="contador">00d 00h 00m 00s</div>
+	<div id="mensajeBienvenida">Los esperamos:</div> <!-- 🔹 Nuevo texto -->
+	<div id="nombreInvitado">Invitado</div>
+  </section>
+
+  <!-- Fondo3 -->
+  <section id="fondo3">
+    <button id="btnIglesia" class="boton" >
+      La ceremonia será en la iglesia:
+      <div></div>
+      <a href="https://maps.app.goo.gl/169umMa6ScUTyLVBA" target="_blank" style="color:#960018; text-decoration:underline;">
+        Parroquia San Luis Gonzaga
+      </a>
+      <div></div>19:00Hs
+    </button>
+
+    <button id="btnSalon" class="boton" >
+      El salón para la celebración será:
+      <div></div>
+      <a href="https://maps.app.goo.gl/dE5ZwpyMcKssvmyQ6" target="_blank" style="color:#960018; text-decoration:underline;">
+        Club Banco Provincia
+      </a>
+      <div></div>21:00Hs
+    </button>
+  </section>
+
+  <!-- Fondo4 -->
+  <section id="fondo4">
+    <button id="btnConfirmar" class="boton" onclick="confirmarAsistencia()">Confirmar Asistencia</button>
+  </section>
+
+  <!-- Botón flotante música -->
+  <button class="btn-musica" onclick="toggleMusica()">
+    🎵
+  </button>
+  
+    <!-- Modal Confirmación -->
+  <div id="modalConfirmacion">
+    <div id="modalContenido">
+      <h3>¿Cuántos asistirán?</h3>
+      <select id="invitadosSelect"></select><br>
+      <button class="modal-btn" id="btnEnviarConfirmacion">Confirmar</button>
+    </div>
+  </div>
+
+  <audio id="cancion" loop>
+    <source src="cancion.mp3" type="audio/mpeg">
+  </audio>
+
+  <script type="module">
+    // ----------- Contador (NO TOCAR) -----------
+    const fechaBoda = new Date("2026-02-14T19:00:00").getTime();
+    const contadorEl = document.getElementById("contador");
+
+    setInterval(() => {
+      const ahora = new Date().getTime();
+      const diferencia = fechaBoda - ahora;
+
+      const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+      contadorEl.textContent = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+    }, 1000);
+
+    // ----------- Música (NO TOCAR) -----------
+    const cancion = document.getElementById("cancion");
+    function toggleMusica() {
+      if (cancion.paused) cancion.play();
+      else cancion.pause();
+    }
+
+    // ----------- Firebase Integrado -----------
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCH6S96lGMbUManPhCkXqHFQGPCdJ_7hkg",
+      authDomain: "invitacion-boda-14.firebaseapp.com",
+      projectId: "invitacion-boda-14",
+      storageBucket: "invitacion-boda-14.firebasestorage.app",
+      messagingSenderId: "792408500001",
+      appId: "1:792408500001:web:7c0998db3821fe03280060"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ----------- Nombre del invitado (desde ID en URL) -----------
+    const urlParams = new URLSearchParams(window.location.search);
+    const invitadoID = urlParams.get('id') || 'fam1';
+    const nombreEl = document.getElementById("nombreInvitado");
+
+    let dataInvitado = {};
+
+    async function cargarInvitado() {
+      const docRef = doc(db, "invitados", invitadoID);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        dataInvitado = docSnap.data();
+        nombreEl.textContent = dataInvitado.nombre || "Invitado";
+      } else {
+        nombreEl.textContent = "Invitado";
+      }
+    }
+
+    // ----------- Confirmación de asistencia -----------
+    const modal = document.getElementById("modalConfirmacion");
+    const select = document.getElementById("invitadosSelect");
+    const btnConfirmar = document.getElementById("btnConfirmar");
+    const btnEnviar = document.getElementById("btnEnviarConfirmacion");
+
+    btnConfirmar.addEventListener("click", () => {
+      modal.style.display = "flex";
+      select.innerHTML = "";
+      const max = dataInvitado.maxInvitados || 1;
+      for (let i = 1; i <= max; i++) {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = i === 1 ? "1 Persona" : `${i} Personas`;
+        select.appendChild(opt);
+      }
+    });
+
+    btnEnviar.addEventListener("click", async () => {
+      const cantidad = select.value;
+      await addDoc(collection(db, "confirmaciones"), {
+        invitadoID,
+        cantidad: Number(cantidad),
+        fecha: serverTimestamp()
+      });
+      modal.style.display = "none";
+      alert("¡Gracias por confirmar tu asistencia!");
+    });
+
+    cargarInvitado();
+
+    // ----------- Funciones mejoradas de ajuste (responsive) ----------
+    // Nota: estas funciones son las únicas que podés usar para mover/redimensionar.
+    // Si pasás números se convierten a vh/vw; si pasás strings con unidad se usan tal cual.
+
+    /**
+     * Convierte un valor numérico (px) a vw o vh según el eje
+     * Si recibe string (p. ej. "40vh", "25%") lo devuelve tal cual.
+     */
+    function _toViewportUnit(value, axis) {
+      // axis: 'y' -> vh, 'x' -> vw
+      if (typeof value === 'string') {
+        return value;
+      }
+      if (typeof value === 'number') {
+        if (axis === 'y') {
+          const vh = (value / window.innerHeight) * 100;
+          // clamp a 0..100
+          const clamped = Math.max(0, Math.min(100, vh));
+          return clamped.toFixed(4) + 'vh';
+        } else {
+          const vw = (value / window.innerWidth) * 100;
+          const clamped = Math.max(0, Math.min(100, vw));
+          return clamped.toFixed(4) + 'vw';
+        }
+      }
+      return value;
+    }
+
+    /**
+     * moverElemento(id, top, left)
+     * - top/left pueden ser:
+     *    - número -> interpretado como pixels pero convertido a vh/vw (responsive)
+     *    - string con unidad -> aplicado tal cual ("40vh","45%","200px")
+     */
+    function moverElemento(id, top, left) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const topVal = _toViewportUnit(top, 'y');
+      const leftVal = _toViewportUnit(left, 'x');
+      el.style.position = 'absolute';
+      el.style.top = topVal;
+      el.style.left = leftVal;
+      // centramos por defecto el punto (si preferís el borde superior-izq, comentá la línea siguiente)
+      el.style.transform = 'translate(-50%, -50%)';
+    }
+
+    /**
+     * redimensionarElemento(id, size)
+     * - size puede ser número (convertido a vw según designWidth) o string (ej "24px","3vw")
+     * - por defecto usa conversion basada en designWidth (puedes cambiar designWidth abajo)
+     */
+    const designWidth = 1366; // cambia si tu mock usa otra referencia (no toca el código principal)
+    function redimensionarElemento(id, size) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (typeof size === 'number') {
+        // convertimos tamaño (px) en una unidad vw proporcional:
+        const vw = (size / designWidth) * 100;
+        el.style.fontSize = vw.toFixed(4) + 'vw';
+      } else if (typeof size === 'string') {
+        el.style.fontSize = size;
+      }
+      // ajustar padding de botones para mantener proporción
+      if (el.tagName === 'BUTTON' || el.classList.contains('boton')) {
+        // usamos em para que dependa del font-size recién seteado
+        el.style.padding = '0.6em 1.2em';
+      }
+    }
+
+    // ----------------- EJEMPLOS (no obligatorios) -----------------
+    // Estos son los ejemplos que venías usando. Los dejé tal cual:
+    moverElemento("mensajeBienvenida", 720, 750); // podés ajustar manualmente si querés
+	moverElemento("contador", 415, 950);
+    moverElemento("nombreInvitado", 790, 750);
+    moverElemento("btnIglesia", 395, 500);
+    moverElemento("btnSalon", 725, 500);
+    moverElemento("btnConfirmar", 725, 1400);
+
+    // ejemplo de redimensionado (números convertidos en vw automáticamente):
+    redimensionarElemento("mensajeBienvenida", 40); // tamaño de fuente (igual estilo)
+	redimensionarElemento("contador", 75);
+    redimensionarElemento("nombreInvitado", 50);
+    redimensionarElemento("btnIglesia", 40);
+    redimensionarElemento("btnSalon", 40);
+    redimensionarElemento("btnConfirmar", 30);
+
+    // Si preferís usar unidades directas (ejemplo):
+    // moverElemento("contador", "40vh", "30vw");
+    // redimensionarElemento("contador", "4rem");
+
+    // Reaplicar posiciones al redimensionar ventana (opcional para reajuste)
+    window.addEventListener('resize', () => {
+      // re-ejecuta las últimas conversiones si pasaste números
+      // (no hacemos nada automático aquí porque top/left ya usan vh/vw)
+      // Si querés, podemos guardar en una estructura las 'config' y reaplicarlas aquí.
+    });
+
+  </script>
+
+</body>
+</html>
