@@ -4,252 +4,273 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invitación de Boda</title>
-
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
-/* Estilos por defecto para pantallas grandes */
-body {
-	  margin: 0;
-	  padding: 0;
-	  font-family: 'Great Vibes', sans-serif;
-	  color: #960018;
-	  text-align: center;
-	}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Great Vibes', cursive;
+      color: #960018;
+      overflow-x: hidden;
+      background: #000;
+    }
+    section {
+      height: 100vh;
+      width: 100vw;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 5vh 5vw;
+    }
 
-	section {
-	  height: 100vh;
-	  display: flex;
-	  flex-direction: column;
-	  justify-content: center;
-	  align-items: center;
-	  background-size: cover;
-	  background-position: center;
-	  background-repeat: no-repeat;
-	  position: relative;
-	}
+    /* Fondos (9:16 - 1080x1920) */
+    #fondo1 { background-image: url('fondo1.png'); }
+    #fondo2 { background-image: url('fondo2.png'); }
+    #fondo3 { background-image: url('fondo3.png'); }
+    #fondo4 { background-image: url('fondo4.png'); }
 
-	/* Fondos */
-	#fondo1 { background-image: url("fondo1.png"); }
-	#fondo2 { background-image: url("fondo2.png"); }
-	#fondo3 { background-image: url("fondo3.png"); }
-	#fondo4 { background-image: url("fondo4.png"); }
+    /* Clase para posicionar elementos manualmente */
+    .posicionable {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      width: 90%;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+	
+    /* Ajustes individuales - CAMBIÁ ESTOS % PARA MOVER */
+    #mensajeBienvenida {
+      top: 77%;        /* Cambiá para subir/bajar */
+	  left: 23%;
+      font-size: 7vw;
+      font-weight: bold;
+    }
+    #nombreInvitado {
+      top: 83%;        /* Cambiá para subir/bajar */
+	  left: 50%;
+      font-size: 9vw;
+      font-weight: bold;
+    }
+    #contador {
+      top: 21%;        /* Cambiá para subir/bajar */
+	  left: 65%;
+      font-size: 12vw;
+      font-weight: bold;
+    }
+/* Pantalla 3: botones uno arriba del otro */
+    #fondo3 {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5vh;
+    }
 
-	/* Elementos dinámicos */
-	#contador {
-	  font-size: 85px !important;
-	  font-weight: bold;
-	  position: absolute;
-	}
+    /* Estilos de botones */
+    .boton {
+      background: rgba(255,255,255,0.92);
+      border: none;
+      padding: 3.5vh 7vw;
+      border-radius: 20px;
+      font-size: 5vw;
+      cursor: pointer;
+      width: 98%;
+      max-width: 580px;
+      text-align: center;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      transition: all 0.3s;
+    }
+    .boton:hover { 
+      background: white; 
+      transform: scale(1.00); 
+    }
 
-	#nombreInvitado {
-	  font-size: 65px !important;
-	  font-weight: bold;
-	  position: absolute;
-	}
+    /* Estilos internos del botón */
+    .texto-ubicacion {
+      font-size: 5vw;
+      margin-bottom: 1vh;
+      line-height: 1.3;
+    }
+    .lugar {
+      font-size: 6vw;
+      font-weight: bold;
+      margin: 1vh 0;
+    }
+    .lugar a {
+      color: #960018;
+      text-decoration: underline;
+    }
+    .hora {
+      font-size: 6.5vw;
+      font-weight: bold;
+      margin-top: 1vh;
+    }
 
-	.boton {
-	  background: rgba(255, 255, 255, 0.85);
-	  border: none;
-	  padding: 10px 20px;
-	  border-radius: 10px;
-	  font-size: 50px !important;
-	  cursor: pointer;
-	  transition: background 0.3s;
-	  position: absolute;
-	}
+    /* Botón confirmar en fondo4 */
+    #btnConfirmar {
+      width: 98%;
+      max-width: 580px;
+    }
 
-	.boton:hover {
-	  background: rgba(255, 255, 255, 1);
-	}
+    /* Botón música */
+    .btn-musica {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
 
-	/* Estilos específicos para el botón de confirmar */
-	.boton-confirmar {
-	  font-size: 40px !important; /* Tamaño de fuente más pequeño */
-	  padding: 8px 16px !important; /* Ajusta el padding para que sea más chico */
-	}
+    /* Modal */
+    #modalConfirmacion {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 5vw;
+    }
+    #modalContenido {
+      background: white;
+      padding: 6vh 5vw;
+      border-radius: 20px;
+      text-align: center;
+      width: 90%;
+      max-width: 350px;
+    }
+    #invitadosSelect {
+      width: 100%;
+      padding: 12px;
+      margin: 15px 0;
+      font-size: 5vw;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+    .modal-btn {
+      background: #960018;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 5vw;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
 
-	/* Botón flotante música */
-	.btn-musica {
-	  position: fixed;
-	  top: 20px;
-	  right: 20px;
-	  background: rgba(255,255,255,0.8);
-	  border: none;
-	  border-radius: 50%;
-	  padding: 12px;
-	  cursor: pointer;
-	  z-index: 999;
-	}
-
-	.btn-musica img {
-	  width: 22px;
-	  height: 22px;
-	}
-
-	/* Modal confirmación */
-	#modalConfirmacion {
-	  display: none;
-	  position: fixed;
-	  top: 0; left: 0;
-	  width: 100%; height: 100%;
-	  background: rgba(0, 0, 0, 0.6);
-	  justify-content: center;
-	  align-items: center;
-	  z-index: 9999;
-	}
-
-	#modalContenido {
-	  background: white;
-	  color: #960018;
-	  padding: 25px;
-	  border-radius: 12px;
-	  text-align: center;
-	  width: 280px;
-	}
-
-	select {
-	  margin-top: 10px;
-	  padding: 8px;
-	  border-radius: 5px;
-	  border: 1px solid #ccc;
-	}
-
-	#mensajeBienvenida {
-	  font-size: 50px !important;
-	  font-weight: bold;
-	  position: absolute;
-	  color: #960018;
-	}
-
-	button.modal-btn {
-	  margin-top: 15px;
-	  padding: 8px 16px;
-	  border: none;
-	  border-radius: 6px;
-	  cursor: pointer;
-	  background-color: #960018;
-	  color: white;
-	  font-weight: bold;
-	}
-
-	/* Responsive: si necesitás ajustar más, lo hacemos por media queries */
-	@media (max-width: 1200px) {
-	  #contador { font-size: 20px !important; }
-	  #nombreInvitado { font-size: 18px !important; }
-	  .boton { font-size: 14px !important; padding: 8px 14px; }
-	}
-
-	@media (max-width: 768px) {
-	  #contador { font-size: 18px !important; }
-	  #nombreInvitado { font-size: 16px !important; }
-	  .boton { font-size: 14px !important; padding: 8px 14px; }
-	}
-
-	@media (max-width: 480px) {
-	  #contador { font-size: 16px !important; }
-	  #nombreInvitado { font-size: 14px !important; }
-	  .boton { font-size: 12px !important; padding: 6px 12px; }
-	}
+    /* Responsive para móviles pequeños */
+    @media (max-width: 480px) {
+      .texto-ubicacion { font-size: 5vw; }
+      .lugar { font-size: 6vw; }
+      .hora { font-size: 6.5vw; }
+      .boton { font-size: 5vw; }
+    }
   </style>
 </head>
 <body>
 
-	<!-- Fondo1 -->
-	<section id="fondo1" style="background-image: url('fondo1.png'); background-size: cover; background-position: center; background-repeat: no-repeat;"></section>
+  <!-- Fondo 1 -->
+  <section id="fondo1"></section>
 
-	<!-- Fondo2 -->
-	<section id="fondo2" style="background-image: url('fondo2.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-	  <div id="contador">00d 00h 00m 00s</div>
-	  <div id="mensajeBienvenida">Los esperamos:</div>
-	  <div id="nombreInvitado">Invitado</div>
-	</section>
+  <!-- Fondo 2 -->
+  <section id="fondo2">
+    <div id="mensajeBienvenida" class="posicionable">Los esperamos:</div>
+    <div id="nombreInvitado" class="posicionable">Invitado</div>
+    <div id="contador" class="posicionable">00d 00h 00m 00s</div>
+  </section>
 
-	<!-- Fondo3 -->
-	<section id="fondo3" style="background-image: url('fondo3.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-	  <button id="btnIglesia" class="boton">
-		La ceremonia será en la iglesia:
-		<div></div>
-		<a href="https://maps.app.goo.gl/169umMa6ScUTyLVBA" target="_blank" style="color:#960018; text-decoration:underline;">
-		  Parroquia San Luis Gonzaga
-		</a>
-		<div></div>19:30Hs
-	  </button>
+  <!-- Fondo 3 -->
+  <section id="fondo3">
+    <button id="btnIglesia" class="boton">
+      <div class="texto-ubicacion">La ceremonia será en la iglesia:</div>
+      <div class="lugar">
+        <a href="https://maps.app.goo.gl/169umMa6ScUTyLVBA" target="_blank">
+          Parroquia San Luis Gonzaga
+        </a>
+      </div>
+      <div class="hora">19:30Hs</div>
+    </button>
 
-	  <button id="btnSalon" class="boton">
-		El salón para la celebración será:
-		<div></div>
-		<a href="https://maps.app.goo.gl/dE5ZwpyMcKssvmyQ6" target="_blank" style="color:#960018; text-decoration:underline;">
-		  Club Banco Provincia
-		</a>
-		<div></div>21:00Hs
-	  </button>
-	</section>
+    <button id="btnSalon" class="boton">
+      <div class="texto-ubicacion">El salón para la celebración será:</div>
+      <div class="lugar">
+        <a href="https://maps.app.goo.gl/dE5ZwpyMcKssvmyQ6" target="_blank">
+          Club Banco Provincia
+        </a>
+      </div>
+      <div class="hora">21:00Hs</div>
+    </button>
+  </section>
 
-	<!-- Fondo4 -->
-	<section id="fondo4" style="background-image: url('fondo4.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-	  <button id="btnConfirmar" class="boton boton-confirmar" onclick="confirmarAsistencia()">Confirmar Asistencia</button>
-	</section>
+  <!-- Fondo 4 -->
+  <section id="fondo4">
+    <button id="btnConfirmar" class="boton">Confirmar Asistencia</button>
+  </section>
 
-  <!-- Botón flotante música -->
-	<button class="btn-musica" id="btnMusica">
-	🎵
-	</button>
+  <!-- Botón música -->
+  <button class="btn-musica" id="btnMusica">Play Music</button>
+  <audio id="cancion" loop preload="auto">
+    <source src="cancion.mp3" type="audio/mpeg">
+  </audio>
 
-	<audio id="cancion" loop preload="auto">
-	<source src="cancion.mp3" type="audio/mpeg">
-	</audio>
-  
-    <!-- Modal Confirmación -->
+  <!-- Modal Confirmación -->
   <div id="modalConfirmacion">
     <div id="modalContenido">
-      <h3>¿Cuántos asistirán?</h3>
-      <select id="invitadosSelect"></select><br>
+      <h3 style="margin-bottom: 10px; color: #960018;">¿Cuántos asistirán?</h3>
+      <select id="invitadosSelect"></select>
       <button class="modal-btn" id="btnEnviarConfirmacion">Confirmar</button>
     </div>
   </div>
 
   <script type="module">
-    // ----------- Contador (NO TOCAR) -----------
+    // CONTADOR
     const fechaBoda = new Date("2026-02-14T19:00:00").getTime();
     const contadorEl = document.getElementById("contador");
-
     setInterval(() => {
       const ahora = new Date().getTime();
-      const diferencia = fechaBoda - ahora;
-
-      const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-      const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
-      const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
-
-      contadorEl.textContent = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+      const diff = fechaBoda - ahora;
+      const d = Math.floor(diff / (1000*60*60*24));
+      const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+      const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+      const s = Math.floor((diff % (1000*60)) / 1000);
+      contadorEl.textContent = `${d}d ${h}h ${m}m ${s}s`;
     }, 1000);
 
-    // ----------- Música (NO TOCAR) -----------
-      const cancion = document.getElementById("cancion");
-  const btnMusica = document.getElementById("btnMusica");
+    // MÚSICA
+    const cancion = document.getElementById("cancion");
+    const btnMusica = document.getElementById("btnMusica");
+    const inicioMusica = 17;
+    btnMusica.addEventListener("click", async () => {
+      try {
+        if (cancion.paused) {
+          cancion.currentTime = inicioMusica;
+          await cancion.play();
+          btnMusica.textContent = "Stop Music";
+        } else {
+          cancion.pause();
+          btnMusica.textContent = "Play Music";
+        }
+      } catch (e) { console.log("Error audio:", e); }
+    });
 
-  // 👉 Definí acá en qué momento empieza la canción (en segundos)
-  const inicioMusica = 17; // por ejemplo: empieza desde el segundo 30
-
-  btnMusica.addEventListener("click", async () => {
-    try {
-      if (cancion.paused) {
-        cancion.currentTime = inicioMusica; // arranca desde el segundo que elijas
-        await cancion.play();
-        btnMusica.textContent = "🔊"; // cambia icono al reproducir
-      } else {
-        cancion.pause();
-        btnMusica.textContent = "🎵"; // cambia icono al pausar
-      }
-    } catch (error) {
-      console.error("Error al reproducir la canción:", error);
-    }
-  });
-
-    // ----------- Firebase Integrado -----------
+    // FIREBASE
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
     import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-
+    
     const firebaseConfig = {
       apiKey: "AIzaSyCH6S96lGMbUManPhCkXqHFQGPCdJ_7hkg",
       authDomain: "invitacion-boda-14.firebaseapp.com",
@@ -258,15 +279,13 @@ body {
       messagingSenderId: "792408500001",
       appId: "1:792408500001:web:7c0998db3821fe03280060"
     };
-
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // ----------- Nombre del invitado (desde ID en URL) -----------
+    // INVITADO
     const urlParams = new URLSearchParams(window.location.search);
     const invitadoID = urlParams.get('id') || 'fam1';
     const nombreEl = document.getElementById("nombreInvitado");
-
     let dataInvitado = {};
 
     async function cargarInvitado() {
@@ -275,18 +294,14 @@ body {
       if (docSnap.exists()) {
         dataInvitado = docSnap.data();
         nombreEl.textContent = dataInvitado.nombre || "Invitado";
-      } else {
-        nombreEl.textContent = "Invitado";
       }
     }
+    cargarInvitado();
 
-    // ----------- Confirmación de asistencia -----------
+    // CONFIRMACIÓN
     const modal = document.getElementById("modalConfirmacion");
     const select = document.getElementById("invitadosSelect");
-    const btnConfirmar = document.getElementById("btnConfirmar");
-    const btnEnviar = document.getElementById("btnEnviarConfirmacion");
-
-    btnConfirmar.addEventListener("click", () => {
+    document.getElementById("btnConfirmar").addEventListener("click", () => {
       modal.style.display = "flex";
       select.innerHTML = "";
       const max = dataInvitado.maxInvitados || 1;
@@ -298,7 +313,7 @@ body {
       }
     });
 
-    btnEnviar.addEventListener("click", async () => {
+    document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
       const cantidad = select.value;
       await addDoc(collection(db, "confirmaciones"), {
         invitadoID,
@@ -306,88 +321,13 @@ body {
         fecha: serverTimestamp()
       });
       modal.style.display = "none";
-      alert("¡Gracias por confirmar tu asistencia!");
+      alert("¡Gracias por confirmar!");
     });
 
-    cargarInvitado();
-
-   // Funciones mejoradas de ajuste (responsive)
-	function _toViewportUnit(value, axis) {
-	  if (typeof value === 'string') {
-		return value;
-	  }
-	  if (typeof value === 'number') {
-		if (axis === 'y') {
-		  const vh = (value / window.innerHeight) * 100;
-		  const clamped = Math.max(0, Math.min(100, vh));
-		  return clamped.toFixed(4) + 'vh';
-		} else {
-		  const vw = (value / window.innerWidth) * 100;
-		  const clamped = Math.max(0, Math.min(100, vw));
-		  return clamped.toFixed(4) + 'vw';
-		}
-	  }
-	  return value;
-	}
-
-	function moverElemento(id, top, left) {
-	  const el = document.getElementById(id);
-	  if (!el) return;
-	  const topVal = _toViewportUnit(top, 'y');
-	  const leftVal = _toViewportUnit(left, 'x');
-	  el.style.position = 'absolute';
-	  el.style.top = topVal;
-	  el.style.left = leftVal;
-	  el.style.transform = 'translate(-50%, -50%)';
-	}
-
-	function redimensionarElemento(id, size) {
-	  const el = document.getElementById(id);
-	  if (!el) return;
-	  if (typeof size === 'number') {
-		const vw = (size / designWidth) * 100;
-		el.style.fontSize = vw.toFixed(4) + 'vw';
-	  } else if (typeof size === 'string') {
-		el.style.fontSize = size;
-	  }
-	  if (el.tagName === 'BUTTON' || el.classList.contains('boton')) {
-		el.style.padding = '0.6em 1.2em';
-	  }
-	}
-
-	// Ejemplos de uso
-	moverElemento("contador", 415, 950);
-	moverElemento("mensajeBienvenida", 610, 400);
-	moverElemento("nombreInvitado", 700, 950);
-	moverElemento("btnIglesia", 435, 500);
-	moverElemento("btnSalon", 715, 500);
-	moverElemento("btnConfirmar", 725, 1400);
-
-	redimensionarElemento("contador", 750);
-	redimensionarElemento("mensajeBienvenida", 60);
-	redimensionarElemento("nombreInvitado", 75);
-	redimensionarElemento("btnIglesia", 40);
-	redimensionarElemento("btnSalon", 40);
-	redimensionarElemento("btnConfirmar", 30);
-
-	// Reaplicar posiciones al redimensionar ventana
-	window.addEventListener('resize', () => {
-	  moverElemento("mensajeBienvenida", 720, 750);
-	  moverElemento("contador", 415, 950);
-	  moverElemento("nombreInvitado", 790, 750);
-	  moverElemento("btnIglesia", 395, 500);
-	  moverElemento("btnSalon", 725, 500);
-	  moverElemento("btnConfirmar", 725, 1400);
-
-	  redimensionarElemento("mensajeBienvenida", 40);
-	  redimensionarElemento("contador", 750);
-	  redimensionarElemento("nombreInvitado", 50);
-	  redimensionarElemento("btnIglesia", 40);
-	  redimensionarElemento("btnSalon", 40);
-	  redimensionarElemento("btnConfirmar", 30);
-	});
-
+    // Cerrar modal al tocar fuera
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    });
   </script>
-
 </body>
 </html>
