@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Invitación de Boda</title>
-  <!-- Fuentes: Great Vibes + Agbalumo -->
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Agbalumo&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -15,477 +14,359 @@
       background: #000;
     }
     section {
-	  height: 100vh;
-	  width: 100vw;
-	  position: relative;
-	  display: flex;
-	  flex-direction: column;
-	  justify-content: center;
-	  align-items: center;
-	  padding: 5vh 5vw;
-	  overflow: hidden;
-	  /* SIN background aquí */
-	}
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 5vh 5vw;
+      overflow: hidden;
+    }
 
-	/* ====================== FONDOS 1 Y 4: IMAGEN COMPLETA + FONDO BLANCO ====================== */
-	#fondo1::before,
-	#fondo4::before {
-	  content: '';
-	  position: absolute;
-	  top: 0; left: 0; right: 0; bottom: 0;
-	  background-size: contain !important;        /* ← IMAGEN COMPLETA */
-	  background-position: center center !important;
-	  background-repeat: no-repeat !important;
-	  background-color: #ffffff !important;        /* ← FONDO BLANCO */
-	  z-index: -1;
-	}
+    /* ====================== FONDOS 1 Y 4: IMAGEN COMPLETA ====================== */
+    #fondo1::before,
+    #fondo4::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-size: contain !important;
+      background-position: center center !important;
+      background-repeat: no-repeat !important;
+      z-index: -1;
+    }
+    #fondo1::before {
+      background-image: url('fondo1.png');
+      background-color: #191618 !important;
+    }
+    #fondo4::before {
+      background-image: url('fondo4.png');
+      background-color: #ffffff !important;
+    }
 
-	#fondo1::before { background-image: url('fondo1.png'); }
-	#fondo4::before { background-image: url('fondo4.png'); }
+    /* ====================== FONDOS 2 Y 3: COVER CLÁSICO ====================== */
+    #fondo2, #fondo3 {
+      background-size: cover !important;
+      background-position: center center !important;
+      background-repeat: no-repeat !important;
+      background-color: #000000 !important;
+    }
+    #fondo2 { background-image: url('fondo2.png'); }
+    #fondo3 { background-image: url('fondo3.png'); }
 
-	/* ====================== FONDOS 2 Y 3: ESTILO CLÁSICO (sin ::before) ====================== */
-	#fondo2, #fondo3 {
-	  background-size: cover !important;
-	  background-position: center center !important;
-	  background-repeat: no-repeat !important;
-	  background-color: #000000 !important; /* ← Negro como antes */
-	}
-
-	#fondo2 { background-image: url('fondo2.png'); }
-	#fondo3 { background-image: url('fondo3.png'); }
-
-    /* Clase para posicionar elementos manualmente */
+    /* ====================== ELEMENTOS POSICIONABLES ====================== */
     .posicionable {
       position: absolute;
       text-align: center;
       text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-
-    /* Ajustes individuales - CAMBIÁ ESTOS % PARA MOVER */
     #mensajeBienvenida {
-      top: 73%;
-      left: 9%;
-      font-size: 7vw;
-      font-weight: bold;
+      top: 73%; left: 9%; font-size: 7vw; font-weight: bold;
     }
     #nombreInvitado {
-	  top: 80%;
-	  left: 45%;
-	  transform: translateX(-50%);   /* ← Centrado perfecto */
-	  font-size: 8vw;                 /* ← Un poco más chico */
-	  font-weight: bold;
-	  white-space: nowrap;            /* ← Todo en una línea */
-	  overflow: hidden;
-	  text-overflow: ellipsis;        /* ← "..." si es muy largo */
-	  max-width: 90%;                 /* ← No se sale del borde */
-	  margin: 0 auto;
-	}
-	
+      top: 80%; left: 45%; transform: translateX(-50%);
+      font-size: 8vw; font-weight: bold; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; max-width: 90%;
+    }
     #contador {
-	  top: 21%;
-	  left: 65%;
-	  transform: translateX(-50%);
-	  font-size: 8.5vw;           /* ← MÁS PEQUEÑO para que quepa */
-	  font-weight: bold;
-	  font-family: 'Agbalumo', cursive;
-	  white-space: nowrap;        /* ← NO SALTA DE LÍNEA */
-	  overflow: hidden;
-	  text-overflow: clip;        /* ← Corta si es muy largo (mejor que saltar) */
-	  letter-spacing: 0.5px;      /* ← Separa un poco las letras */
-	  line-height: 1.2;
-	}
-
-    /* ====================== PANTALLA 3: UBICACIONES (POSICIONABLES) ====================== */
-    #fondo3 {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: left;
-      align-items: center;
-      gap: 5vh;
+      top: 21%; left: 65%; transform: translateX(-50%);
+      font-size: 9vw; font-weight: bold; font-family: 'Agbalumo', cursive;
+      white-space: nowrap; overflow: hidden; text-overflow: clip;
+      letter-spacing: 0.5px; line-height: 1.2; z-index: 10; pointer-events: none;
     }
-	
-    #btnIglesia, #btnSalon {
-	  position: absolute;
-	  left: 50%;
-	  transform: translateX(-50%);
-	  width: 96vw;           /* ← Casi todo el ancho de la pantalla */
-	  max-width: 720px;      /* ← Límite en pantallas grandes */
-	}
-	
-    #btnIglesia { top: 57%; }
-    #btnSalon   { top: 77%; }
 
-    /* ====================== PANTALLA 4: CONFIRMAR (POSICIONABLE) ====================== */
-    #fondo4 {
-      position: relative;
-    }
+    /* ====================== BOTONES: TAMAÑO FIJO + POSICIÓN ORIGINAL ====================== */
+    #btnIglesia,
+    #btnSalon,
     #btnConfirmar {
       position: absolute;
-      left: 48%;
-      transform: translateX(-48%);
-      top: 67%;
-      width: 98%;
-      max-width: 580px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 340px !important;
+      max-width: 90vw !important;
+      z-index: 10;
     }
 
-   /* ====================== BOTONES DE UBICACIÓN - ESTILO MINIMALISTA ROJO (CORREGIDO) ====================== */
-	.boton-ubicacion {
-	  cursor: pointer;
-	  position: relative;
-	  padding: 1.8vh 4vw;
-	  font-family: 'Great Vibes', cursive;
-	  font-size: 5.5vw;
-	  font-weight: bold;
-	  color: #960018;
-	  border: 0.12em solid #960018;
-	  border-radius: 1.6em;
-	  background-color: transparent;
-	  text-align: center;
-	  overflow: hidden;
-	  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
-	  width: 96vw;
-	  max-width: 720px;
-	  display: flex;
-	  flex-direction: column;
-	  justify-content: center;
-	  align-items: center;
-	  gap: 0.6vh;
-	  z-index: 1;
-	}
+    #btnIglesia { top: 57%; }
+    #btnSalon   { top: 77%; }
+    #btnConfirmar { top: 67%; }
 
-	.boton-ubicacion::before {
-	  content: '';
-	  position: absolute;
-	  inset: 0;                    /* ← CUBRE TODO EL BOTÓN */
-	  border-radius: inherit;      /* ← Mismo borde redondeado */
-	  background-color: #960018;
-	  scale: 0;
-	  z-index: -1;
-	  transition: scale 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-	}
+    @media (max-width: 380px) {
+      #btnIglesia,
+      #btnSalon,
+      #btnConfirmar {
+        width: 300px !important;
+      }
+    }
 
-	/* HOVER: fondo crece desde el centro */
-	.boton-ubicacion:hover::before {
-	  scale: 1;                    /* ← CRECE HASTA CUBRIR TODO */
-	}
+    /* ====================== BOTONES DE UBICACIÓN ====================== */
+    .boton-ubicacion {
+      cursor: pointer;
+      position: relative;
+      padding: 1.8vh 4vw;
+      font-family: 'Great Vibes', cursive;
+      font-size: 6vw;
+      font-weight: bold;
+      color: #960018;
+      border: 0.12em solid #960018;
+      border-radius: 1.6em;
+      background-color: transparent;
+      text-align: center;
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6vh;
+    }
+    .boton-ubicacion::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-color: #960018;
+      scale: 0;
+      z-index: -1;
+      transition: scale 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .boton-ubicacion:hover::before { scale: 1; }
+    .boton-ubicacion:hover {
+      color: white;
+      scale: 1.04;
+      box-shadow: 0 0 18px rgba(150, 0, 24, 0.32);
+    }
+    .boton-ubicacion:active { scale: 0.98; transition: scale 0.1s; }
 
-	/* HOVER: texto blanco + sombra suave */
-	.boton-ubicacion:hover {
-	  color: white;
-	  scale: 1.04;
-	  box-shadow: 0 0 18px rgba(150, 0, 24, 0.32);
-	}
+    .boton-ubicacion .texto-ubicacion,
+    .boton-ubicacion .hora {
+      color: #1a1a1a !important;
+      font-weight: normal;
+      font-size: 6vw;
+      transition: color 0.35s ease;
+      text-decoration: none;
+    }
+    .boton-ubicacion .lugar,
+    .boton-ubicacion .lugar a {
+      color: #960018 !important;
+      font-weight: bold;
+      font-size: 6vw;
+      text-decoration: underline;
+      transition: color 0.35s ease;
+    }
+    .boton-ubicacion:hover .texto-ubicacion,
+    .boton-ubicacion:hover .lugar,
+    .boton-ubicacion:hover .lugar a,
+    .boton-ubicacion:hover .hora {
+      color: white !important;
+    }
 
-	/* ACTIVO: pulso suave */
-	.boton-ubicacion:active {
-	  scale: 0.98;
-	  transition: scale 0.1s;
-	}
+    /* ====================== BOTÓN CONFIRMAR ====================== */
+    .btn-confirmar-animado {
+      --border-right: 6px;
+      --text-base-color: black;
+      --text-stroke-base: rgba(74, 74, 74, 0.6);
+      --animation-color: #960018;
+      --animation-glow: #c41e3a;
+      --fs-size: 5vw;
+      position: relative;
+      display: inline-block;
+      padding: 1.6vh 8vw;
+      margin: 0;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: 'Great Vibes', cursive;
+      font-size: var(--fs-size);
+      font-weight: bold;
+      letter-spacing: 2.5px;
+      color: var(--text-base-color);
+      -webkit-text-stroke: 1.2px var(--text-stroke-base);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+    .btn-confirmar-animado .actual-text,
+    .btn-confirmar-animado .hover-text { white-space: nowrap; }
+    .btn-confirmar-animado .actual-text {
+      position: relative; z-index: 1;
+      color: var(--text-base-color);
+      -webkit-text-stroke: 1.2px var(--text-stroke-base);
+      transition: color 0.4s ease;
+    }
+    .btn-confirmar-animado .hover-text {
+      position: absolute; box-sizing: border-box; content: attr(data-text);
+      color: var(--animation-color); width: 0%; inset: 0;
+      border-right: var(--border-right) solid var(--animation-color);
+      overflow: hidden; transition: width 0.6s ease-out;
+      -webkit-text-stroke: 1.5px var(--animation-color);
+      top: 0; left: 0; display: flex; align-items: center; justify-content: center;
+    }
+    .btn-confirmar-animado:hover {
+      box-shadow: 0 0 28px rgba(150, 0, 24, 0.35);
+      background: rgba(150, 0, 24, 0.05);
+    }
+    .btn-confirmar-animado:hover .actual-text {
+      color: var(--animation-color);
+      -webkit-text-stroke: 1.5px var(--animation-color);
+      text-shadow: 0 0 12px rgba(150, 0, 24, 0.4);
+    }
+    .btn-confirmar-animado:hover .hover-text {
+      width: 100%;
+      filter: drop-shadow(0 0 20px var(--animation-glow));
+    }
+    .btn-confirmar-animado:active { transform: scale(0.98); }
 
-	/* ====================== TEXTOS DENTRO DEL BOTÓN - NEGRO + ROJO ====================== */
+    /* ====================== MÚSICA CON ESTRELLAS ====================== */
+    .contenedor-musica {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 56px;
+      height: 56px;
+      z-index: 999;
+      pointer-events: none;
+    }
+    .btn-musica {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      padding: 0;
+      background: #960018;
+      color: white;
+      border: 3px solid #960018;
+      border-radius: 50%;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 0 rgba(150, 0, 24, 0.4);
+      transition: all 0.3s ease-in-out;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+    }
+    .contenedor-musica svg {
+      position: absolute;
+      fill: #fffdef;
+      filter: drop-shadow(0 0 0 #fffdef);
+      z-index: -1;
+      opacity: 0;
+      transition: all 1s cubic-bezier(0.05, 0.83, 0.43, 0.96);
+      pointer-events: none;
+    }
+    .contenedor-musica .star-1 { top: 20%; left: 20%; width: 25px; }
+    .contenedor-musica .star-2 { top: 45%; left: 45%; width: 15px; }
+    .contenedor-musica .star-3 { top: 40%; left: 40%; width: 5px; }
+    .contenedor-musica .star-4 { top: 20%; left: 40%; width: 8px; }
+    .contenedor-musica .star-5 { top: 25%; left: 45%; width: 15px; }
+    .contenedor-musica .star-6 { top: 5%; left: 50%; width: 5px; }
+    .contenedor-musica:hover .btn-musica {
+      background: transparent;
+      color: #960018;
+      box-shadow: 0 0 28px rgba(150, 0, 24, 0.5);
+      border-color: #960018;
+    }
+    .contenedor-musica:hover svg {
+      opacity: 1;
+      filter: drop-shadow(0 0 10px #960018);
+      z-index: 2;
+    }
+    .contenedor-musica:hover .star-1 { top: -80%; left: -30%; }
+    .contenedor-musica:hover .star-2 { top: -25%; left: 10%; }
+    .contenedor-musica:hover .star-3 { top: 55%; left: 25%; }
+    .contenedor-musica:hover .star-4 { top: 30%; left: 80%; }
+    .contenedor-musica:hover .star-5 { top: 25%; left: 115%; }
+    .contenedor-musica:hover .star-6 { top: 5%; left: 60%; }
+    .btn-musica:active { transform: scale(0.92); }
 
-	/* Textos secundarios (negro) */
-	.boton-ubicacion .texto-ubicacion,
-	.boton-ubicacion .hora {
-	  color: #1a1a1a !important;           /* ← Negro elegante */
-	  font-weight: normal;
-	  font-size: 5.3vw;
-	  transition: color 0.35s ease;
-	  text-decoration: none;
-	}
+    /* ====================== MODAL ====================== */
+    #modalConfirmacion {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 5vw;
+      backdrop-filter: blur(4px);
+    }
+    #modalContenido {
+      background: white;
+      padding: 7vh 6vw;
+      border-radius: 24px;
+      text-align: center;
+      width: 92%;
+      max-width: 720px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      font-family: 'Great Vibes', cursive;
+      color: #960018;
+    }
+    #modalContenido h3 {
+      margin: 0 0 16px 0;
+      font-size: 7.5vw;
+      font-weight: bold;
+      color: #960018;
+    }
+    #invitadosSelect {
+      width: 100%;
+      padding: 10px 12px;
+      margin: 18px 0;
+      font-size: 6.5vw;
+      font-family: 'Great Vibes', cursive;
+      color: #960018;
+      background: #fdfbfb;
+      border: 2px solid #960018;
+      border-radius: 16px;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23960018'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #invitadosSelect:focus {
+      outline: none;
+      border-color: #c41e3a;
+      box-shadow: 0 0 0 3px rgba(150, 0, 24, 0.15);
+    }
+    .modal-btn {
+      background: #960018;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 16px;
+      font-size: 4vw;
+      font-weight: bold;
+      font-family: 'Great Vibes', cursive;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(150, 0, 24, 0.25);
+    }
+    .modal-btn:hover {
+      background: #c41e3a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(150, 0, 24, 0.35);
+    }
+    #modalConfirmacion.show {
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
 
-	/* Lugar (rojo) */
-	.boton-ubicacion .lugar,
-	.boton-ubicacion .lugar a {
-	  color: #960018 !important;           /* ← Rojo principal */
-	  font-weight: bold;
-	  font-size: 5.6vw;
-	  text-decoration: underline;
-	  transition: color 0.35s ease;
-	}
-
-	/* HOVER: TODO blanco */
-	.boton-ubicacion:hover .texto-ubicacion,
-	.boton-ubicacion:hover .lugar,
-	.boton-ubicacion:hover .lugar a,
-	.boton-ubicacion:hover .hora {
-	  color: white !important;
-	  text-shadow: none;
-	}
-
-	/* ====================== BOTÓN CONFIRMAR ASISTENCIA - GRIS → ROJO ====================== */
-	.btn-confirmar-animado {
-	  --border-right: 6px;
-	  --text-base-color: black;        /* ← Gris oscuro mate */
-	  --text-stroke-base: rgba(74, 74, 74, 0.6);
-	  --animation-color: #960018;        /* ← Rojo principal */
-	  --animation-glow: #c41e3a;          /* ← Brillo rojo */
-	  --fs-size: 5vw;
-	  
-	  position: relative;
-	  display: inline-block;
-	  padding: 1.6vh 8vw;
-	  margin: 0;
-	  background: transparent;
-	  border: none;
-	  cursor: pointer;
-	  font-family: 'Great Vibes', cursive;
-	  font-size: var(--fs-size);
-	  font-weight: bold;
-	  letter-spacing: 2.5px;
-	  /* text-transform: uppercase; */ /* ← Ya quitado */
-	  color: var(--text-base-color);     /* ← Color base: gris oscuro */
-	  -webkit-text-stroke: 1.2px var(--text-stroke-base);
-	  border-radius: 16px;
-	  overflow: hidden;
-	  transition: all 0.4s ease;
-	  width: 98%;
-	  max-width: 720px;
-	  white-space: nowrap;
-	  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-	}
-	
-	.btn-confirmar-animado .actual-text,
-	.btn-confirmar-animado .hover-text {
-	  white-space: nowrap;
-	}
-
-	/* Texto real (visible siempre) */
-	.btn-confirmar-animado .actual-text {
-	  position: relative;
-	  z-index: 1;
-	  color: var(--text-base-color);
-	  -webkit-text-stroke: 1.2px var(--text-stroke-base);
-	  transition: color 0.4s ease;
-	}
-
-	/* Texto que se revela (rojo) */
-	.btn-confirmar-animado .hover-text {
-	  position: absolute;
-	  box-sizing: border-box;
-	  content: attr(data-text);
-	  color: var(--animation-color);
-	  width: 0%;
-	  inset: 0;
-	  border-right: var(--border-right) solid var(--animation-color);
-	  overflow: hidden;
-	  transition: width 0.6s ease-out;
-	  -webkit-text-stroke: 1.5px var(--animation-color);
-	  top: 0;
-	  left: 0;
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  filter: drop-shadow(0 0 0 var(--animation-glow));
-	}
-
-	/* HOVER: gris → rojo + animación */
-	.btn-confirmar-animado:hover {
-	  box-shadow: 0 0 28px rgba(150, 0, 24, 0.35);
-	  background: rgba(150, 0, 24, 0.05);
-	}
-
-	.btn-confirmar-animado:hover .actual-text {
-	  color: var(--animation-color);
-	  -webkit-text-stroke: 1.5px var(--animation-color);
-	  text-shadow: 0 0 12px rgba(150, 0, 24, 0.4);
-	}
-
-	.btn-confirmar-animado:hover .hover-text {
-	  width: 100%;
-	  filter: drop-shadow(0 0 20px var(--animation-glow));
-	}
-
-	/* Click: leve pulso */
-	.btn-confirmar-animado:active {
-	  transform: scale(0.98);
-	}
-	
-
-    /* ====================== CONTENEDOR + BOTÓN MÚSICA CON ESTRELLAS ====================== */
-	.contenedor-musica {
-	  position: absolute;
-	  top: 15px;
-	  right: 15px;
-	  width: 56px;
-	  height: 56px;
-	  z-index: 999;
-	  pointer-events: none; /* ← Permite que el click pase al botón */
-	}
-
-	.btn-musica {
-	  position: relative;
-	  width: 56px;
-	  height: 56px;
-	  padding: 0;
-	  background: #960018;
-	  color: white;
-	  border: 3px solid #960018;
-	  border-radius: 50%;
-	  font-size: 22px;
-	  font-weight: bold;
-	  cursor: pointer;
-	  box-shadow: 0 0 0 rgba(150, 0, 24, 0.4);
-	  transition: all 0.3s ease-in-out;
-	  z-index: 10;
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  pointer-events: auto; /* ← Solo el botón recibe clics */
-	}
-
-	.contenedor-musica svg {
-	  position: absolute;
-	  fill: #fffdef;
-	  filter: drop-shadow(0 0 0 #fffdef);
-	  z-index: -1;
-	  opacity: 0;
-	  transition: all 1s cubic-bezier(0.05, 0.83, 0.43, 0.96);
-	  pointer-events: none;
-	}
-
-	/* Posiciones iniciales */
-	.contenedor-musica .star-1 { top: 20%; left: 20%; width: 25px; }
-	.contenedor-musica .star-2 { top: 45%; left: 45%; width: 15px; }
-	.contenedor-musica .star-3 { top: 40%; left: 40%; width: 5px; }
-	.contenedor-musica .star-4 { top: 20%; left: 40%; width: 8px; }
-	.contenedor-musica .star-5 { top: 25%; left: 45%; width: 15px; }
-	.contenedor-musica .star-6 { top: 5%; left: 50%; width: 5px; }
-
-	/* HOVER: Mostrar estrellas + efecto */
-	.contenedor-musica:hover .btn-musica {
-	  background: transparent;
-	  color: #960018;
-	  box-shadow: 0 0 28px rgba(150, 0, 24, 0.5);
-	  border-color: #960018;
-	}
-
-	.contenedor-musica:hover svg {
-	  opacity: 1;
-	  filter: drop-shadow(0 0 10px #960018);
-	  z-index: 2;
-	}
-
-	.contenedor-musica:hover .star-1 { top: -80%; left: -30%; }
-	.contenedor-musica:hover .star-2 { top: -25%; left: 10%; }
-	.contenedor-musica:hover .star-3 { top: 55%; left: 25%; }
-	.contenedor-musica:hover .star-4 { top: 30%; left: 80%; }
-	.contenedor-musica:hover .star-5 { top: 25%; left: 115%; }
-	.contenedor-musica:hover .star-6 { top: 5%; left: 60%; }
-
-	/* Click: escala suave */
-	.btn-musica:active {
-	  transform: scale(0.92);
-	}
-
- /* ==================== MODAL - ESTILO PROFESIONAL ==================== */
-	#modalConfirmacion {
-	  display: none;
-	  position: fixed;
-	  top: 0; left: 0; width: 100%; height: 100%;
-	  background: rgba(0, 0, 0, 0.75);
-	  justify-content: center;
-	  align-items: center;
-	  z-index: 9999;
-	  padding: 5vw;
-	  backdrop-filter: blur(4px); /* ← Fondo borroso elegante */
-	}
-
-	#modalContenido {
-	  background: white;
-	  padding: 7vh 6vw;
-	  border-radius: 24px;
-	  text-align: center;
-	  width: 92%;
-	  max-width: 720px;
-	  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-	  font-family: 'Great Vibes', cursive;
-	  color: #960018;
-	}
-
-	#modalContenido h3 {
-	  margin: 0 0 16px 0;
-	  font-size: 7.5vw;
-	  font-weight: bold;
-	  color: #960018;
-	}
-
-	#invitadosSelect {
-	  width: 100%;
-	  padding: 10px 12px;
-	  margin: 18px 0;
-	  font-size: 6.5vw;
-	  font-family: 'Great Vibes', cursive;
-	  color: #960018;
-	  background: #fdfbfb;
-	  border: 2px solid #960018;
-	  border-radius: 16px;
-	  appearance: none;
-	  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23960018'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-	  background-repeat: no-repeat;
-	  background-position: right 16px center;
-	  background-size: 12px;
-	  cursor: pointer;
-	  transition: all 0.3s ease;
-	}
-
-	#invitadosSelect:focus {
-	  outline: none;
-	  border-color: #c41e3a;
-	  box-shadow: 0 0 0 3px rgba(150, 0, 24, 0.15);
-	}
-
-	.modal-btn {
-	  background: #960018;
-	  color: white;
-	  border: none;
-	  padding: 10px 20px;
-	  border-radius: 16px;
-	  font-size: 4vw;
-	  font-weight: bold;
-	  font-family: 'Great Vibes', cursive;
-	  cursor: pointer;
-	  width: 100%;
-	  margin-top: 12px;
-	  transition: all 0.3s ease;
-	  box-shadow: 0 4px 12px rgba(150, 0, 24, 0.25);
-	}
-
-	.modal-btn:hover {
-	  background: #c41e3a;
-	  transform: translateY(-2px);
-	  box-shadow: 0 6px 16px rgba(150, 0, 24, 0.35);
-	}
-	
-	#modalConfirmacion.show {
-	  animation: fadeIn 0.4s ease-out;
-	}
-
-	@keyframes fadeIn {
-	  from { opacity: 0; transform: scale(0.9); }
-	  to { opacity: 1; transform: scale(1); }
-	}
-
-    /* Responsive para móviles pequeños */
     @media (max-width: 480px) {
-      .texto-ubicacion, .lugar, .hora, .boton {
-        font-size: 5.5vw;
-        white-space: normal; /* ← Permite salto solo si es necesario */
-      }
-      .boton { 
-        width: 96%; 
-        max-width: 500px;
-        padding: 3vh 5vw;
-      }
-      #fondo1 .btn-musica {
-        width: 45px;
-        height: 45px;
-        font-size: 18px;
-        top: 10px;
-        right: 10px;
-      }
-      #contador { font-size: 10vw; }
+      .boton-ubicacion { font-size: 5.5vw; }
+      .btn-confirmar-animado { --fs-size: 5.5vw; }
     }
   </style>
 </head>
@@ -494,17 +375,15 @@
   <!-- Fondo 1 -->
   <section id="fondo1">
     <div class="contenedor-musica">
-	  <button class="btn-musica" id="btnMusica">
-		<span class="emoji-musica">🎵</span>
-	  </button>
-	  <svg class="star-1" width="25" height="25" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
-	  <svg class="star-2" width="15" height="15" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
-	  <svg class="star-3" width="5" height="5" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
-	  <svg class="star-4" width="8" height="8" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
-	  <svg class="star-5" width="15" height="15" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
-	  <svg class="star-6" width="5" height="5" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
-	</div>
-	  </section>
+      <button class="btn-musica" id="btnMusica"><span class="emoji-musica">🎵</span></button>
+      <svg class="star-1" width="25" height="25" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
+      <svg class="star-2" width="15" height="15" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
+      <svg class="star-3" width="5" height="5" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
+      <svg class="star-4" width="8" height="8" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
+      <svg class="star-5" width="15" height="15" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
+      <svg class="star-6" width="5" height="5" viewBox="0 0 24 24"><path class="fil0" d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z"/></svg>
+    </div>
+  </section>
 
   <!-- Fondo 2 -->
   <section id="fondo2">
@@ -516,40 +395,29 @@
   <!-- Fondo 3 -->
   <section id="fondo3">
     <button id="btnIglesia" class="boton-ubicacion">
-	  <div class="texto-ubicacion">La ceremonia será en la iglesia:</div>
-	  <div class="lugar">
-		<a href="https://maps.app.goo.gl/169umMa6ScUTyLVBA" target="_blank">
-		  Parroquia San Luis Gonzaga
-		</a>
-	  </div>
-	  <div class="hora">19:30Hs</div>
-	</button>
-
-	<button id="btnSalon" class="boton-ubicacion">
-	  <div class="texto-ubicacion">El salón para la celebración será:</div>
-	  <div class="lugar">
-		<a href="https://maps.app.goo.gl/dE5ZwpyMcKssvmyQ6" target="_blank">
-		  Club Banco Provincia
-		</a>
-	  </div>
-	  <div class="hora">21:00Hs</div>
-	</button>
+      <div class="texto-ubicacion">La ceremonia será en la iglesia:</div>
+      <div class="lugar"><a href="https://maps.app.goo.gl/169umMa6ScUTyLVBA" target="_blank">Parroquia San Luis Gonzaga</a></div>
+      <div class="hora">19:30Hs</div>
+    </button>
+    <button id="btnSalon" class="boton-ubicacion">
+      <div class="texto-ubicacion">El salón para la celebración será:</div>
+      <div class="lugar"><a href="https://maps.app.goo.gl/dE5ZwpyMcKssvmyQ6" target="_blank">Club Banco Provincia</a></div>
+      <div class="hora">21:00Hs</div>
+    </button>
   </section>
 
   <!-- Fondo 4 -->
   <section id="fondo4">
     <button id="btnConfirmar" class="btn-confirmar-animado" data-text="Confirmar Asistencia">
-	  <span class="actual-text">Confirmar Asistencia</span>
-	  <span class="hover-text" data-text="Confirmar Asistencia">Confirmar Asistencia</span>
-	</button>
+      <span class="actual-text">Confirmar Asistencia</span>
+      <span class="hover-text" data-text="Confirmar Asistencia">Confirmar Asistencia</span>
+    </button>
   </section>
 
-  <!-- Audio (fuera del DOM visible, pero disponible globalmente) -->
   <audio id="cancion" loop preload="auto">
     <source src="cancion.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Modal Confirmación -->
   <div id="modalConfirmacion">
     <div id="modalContenido">
       <h3 style="margin-bottom: 7px; color: #960018;">¿Cuántos asistirán?</h3>
@@ -581,10 +449,10 @@
         if (cancion.paused) {
           cancion.currentTime = inicioMusica;
           await cancion.play();
-          btnMusica.textContent = "🔊";
+          btnMusica.innerHTML = "🔊";
         } else {
           cancion.pause();
-          btnMusica.textContent = "🎵";
+          btnMusica.innerHTML = "🎵";
         }
       } catch (e) { console.log("Error audio:", e); }
     });
@@ -592,7 +460,7 @@
     // FIREBASE
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
     import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-    
+   
     const firebaseConfig = {
       apiKey: "AIzaSyCH6S96lGMbUManPhCkXqHFQGPCdJ_7hkg",
       authDomain: "invitacion-boda-14.firebaseapp.com",
@@ -609,7 +477,6 @@
     const invitadoID = urlParams.get('id') || 'fam1';
     const nombreEl = document.getElementById("nombreInvitado");
     let dataInvitado = {};
-
     async function cargarInvitado() {
       const docRef = doc(db, "invitados", invitadoID);
       const docSnap = await getDoc(docRef);
@@ -624,18 +491,17 @@
     const modal = document.getElementById("modalConfirmacion");
     const select = document.getElementById("invitadosSelect");
     document.getElementById("btnConfirmar").addEventListener("click", () => {
-	  modal.style.display = "flex";
-	  modal.classList.add("show");  // ← AQUÍ VA
-	  select.innerHTML = "";
-	  const max = dataInvitado.maxInvitados || 1;
-	  for (let i = 1; i <= max; i++) {
-		const opt = document.createElement("option");
-		opt.value = i;
-		opt.textContent = i === 1 ? "1 Persona" : `${i} Personas`;
-		select.appendChild(opt);
-	  }
-	});
-
+      modal.style.display = "flex";
+      modal.classList.add("show");
+      select.innerHTML = "";
+      const max = dataInvitado.maxInvitados || 1;
+      for (let i = 1; i <= max; i++) {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = i === 1 ? "1 Persona" : `${i} Personas`;
+        select.appendChild(opt);
+      }
+    });
     document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
       const cantidad = select.value;
       await addDoc(collection(db, "confirmaciones"), {
@@ -646,8 +512,6 @@
       modal.style.display = "none";
       alert("¡Gracias por confirmar!");
     });
-
-    // Cerrar modal al tocar fuera
     modal.addEventListener("click", (e) => {
       if (e.target === modal) modal.style.display = "none";
     });
