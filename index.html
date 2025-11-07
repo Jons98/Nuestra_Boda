@@ -93,8 +93,8 @@
 	  max-width: 720px;      /* ← Límite en pantallas grandes */
 	}
 	
-    #btnIglesia { top: 56%; }
-    #btnSalon   { top: 79%; }
+    #btnIglesia { top: 57%; }
+    #btnSalon   { top: 77%; }
 
     /* ====================== PANTALLA 4: CONFIRMAR (POSICIONABLE) ====================== */
     #fondo4 {
@@ -109,119 +109,89 @@
       max-width: 580px;
     }
 
-   /* ====================== BOTONES DE UBICACIÓN CON GLOW ROJO ====================== */
+   /* ====================== BOTONES DE UBICACIÓN - ESTILO MINIMALISTA ROJO (CORREGIDO) ====================== */
 	.boton-ubicacion {
-	  --glow-color: #960018;                    /* ← Tu color principal */
-	  --glow-spread-color: rgba(150, 0, 24, 0.35);
-	  --enhanced-glow-color: #c41e3a;
-	  --btn-color: rgba(255, 255, 255, 0.97);
-	  
+	  cursor: pointer;
+	  position: relative;
+	  padding: 1.8vh 4vw;
+	  font-family: 'Great Vibes', cursive;
+	  font-size: 5.5vw;
+	  font-weight: bold;
+	  color: #960018;
+	  border: 0.12em solid #960018;
+	  border-radius: 1.6em;
+	  background-color: transparent;
+	  text-align: center;
+	  overflow: hidden;
+	  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+	  width: 96vw;
+	  max-width: 720px;
 	  display: flex;
 	  flex-direction: column;
 	  justify-content: center;
 	  align-items: center;
-	  gap: 0.8vh;
-	  
-	  position: relative;
-	  border: 0.22em solid var(--glow-color);
-	  padding: 2.4vh 4vw;
-	  width: 96vw;
-	  max-width: 720px;
-	  border-radius: 1.8em;
-	  background-color: var(--btn-color);
-	  color: var(--glow-color);
-	  font-family: 'Great Vibes', cursive;
-	  font-size: 5vw;
-	  font-weight: bold;
-	  text-align: center;
-	  cursor: pointer;
-	  outline: none;
-	  overflow: hidden;
-	  
-	  box-shadow: 
-		0 0 1.2em 0.3em var(--glow-color),
-		0 0 3.5em 0.8em var(--glow-spread-color),
-		inset 0 0 0.8em 0.25em var(--glow-color);
-	  
-	  text-shadow: 0 0 0.6em var(--glow-color);
-	  transition: all 0.35s ease;
+	  gap: 0.6vh;
+	  z-index: 1;
 	}
 
-	/* Efecto de brillo inferior */
-	.boton-ubicacion::after {
-	  pointer-events: none;
-	  content: "";
+	.boton-ubicacion::before {
+	  content: '';
 	  position: absolute;
-	  top: 120%;
-	  left: 0;
-	  height: 100%;
-	  width: 100%;
-	  background-color: var(--glow-spread-color);
-	  filter: blur(2.2em);
-	  opacity: 0.7;
-	  transform: perspective(1.8em) rotateX(38deg) scale(1, 0.65);
-	  transition: opacity 0.35s;
+	  inset: 0;                    /* ← CUBRE TODO EL BOTÓN */
+	  border-radius: inherit;      /* ← Mismo borde redondeado */
+	  background-color: #960018;
+	  scale: 0;
+	  z-index: -1;
+	  transition: scale 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 	}
 
-	/* Hover: más brillo y fondo rojo */
+	/* HOVER: fondo crece desde el centro */
+	.boton-ubicacion:hover::before {
+	  scale: 1;                    /* ← CRECE HASTA CUBRIR TODO */
+	}
+
+	/* HOVER: texto blanco + sombra suave */
 	.boton-ubicacion:hover {
 	  color: white;
-	  background-color: var(--glow-color);
-	  box-shadow: 
-		0 0 1.5em 0.4em var(--glow-color),
-		0 0 5em 1.8em var(--glow-spread-color),
-		inset 0 0 1em 0.3em var(--glow-color);
-	  transform: translateY(-2px);
+	  scale: 1.04;
+	  box-shadow: 0 0 18px rgba(150, 0, 24, 0.32);
 	}
 
-	.boton-ubicacion:hover::after {
-	  opacity: 0.9;
-	}
-
-	/* Activo (click) */
+	/* ACTIVO: pulso suave */
 	.boton-ubicacion:active {
-	  transform: translateY(1px);
-	  box-shadow: 
-		0 0 0.8em 0.25em var(--glow-color),
-		0 0 2.8em 1.2em var(--glow-spread-color),
-		inset 0 0 0.6em 0.2em var(--glow-color);
+	  scale: 0.98;
+	  transition: scale 0.1s;
 	}
 
-	/* Textos internos */
-	.boton-ubicacion .texto-ubicacion {
-	  font-size: 5vw;
-	  color: #960018;
-	  font-weight: normal;
-	  opacity: 0.9;
-	}
+	/* ====================== TEXTOS DENTRO DEL BOTÓN - NEGRO + ROJO ====================== */
 
-	.boton-ubicacion .lugar {
-	  font-size: 5vw;
-	  font-weight: bold;
-	  color: #960018 !important;
-	  text-decoration: underline;
-	  margin: 0.4vh 0;
-	}
-
-	.boton-ubicacion .lugar a {
-	  color: #960018 !important;
-	  text-decoration: underline;
-	}
-
+	/* Textos secundarios (negro) */
+	.boton-ubicacion .texto-ubicacion,
 	.boton-ubicacion .hora {
-	  font-size: 5vw;
-	  font-weight: bold;
-	  color: #960018;
-	  opacity: 0.95;
+	  color: #1a1a1a !important;           /* ← Negro elegante */
+	  font-weight: normal;
+	  font-size: 5.3vw;
+	  transition: color 0.35s ease;
+	  text-decoration: none;
 	}
 
-	/* En hover: texto blanco */
+	/* Lugar (rojo) */
+	.boton-ubicacion .lugar,
+	.boton-ubicacion .lugar a {
+	  color: #960018 !important;           /* ← Rojo principal */
+	  font-weight: bold;
+	  font-size: 5.6vw;
+	  text-decoration: underline;
+	  transition: color 0.35s ease;
+	}
+
+	/* HOVER: TODO blanco */
 	.boton-ubicacion:hover .texto-ubicacion,
 	.boton-ubicacion:hover .lugar,
-	.boton-ubicacion:hover .hora,
-	.boton-ubicacion:hover .lugar a {
+	.boton-ubicacion:hover .lugar a,
+	.boton-ubicacion:hover .hora {
 	  color: white !important;
-	  text-shadow: 0 0 8px rgba(255,255,255,0.8);
+	  text-shadow: none;
 	}
 
 	/* ====================== BOTÓN CONFIRMAR ASISTENCIA - GRIS → ROJO ====================== */
