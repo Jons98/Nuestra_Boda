@@ -15,18 +15,20 @@
       background: #000;
     }
     section {
-      height: 100vh;
-      width: 100vw;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 5vh 5vw;
-    }
+	  height: 100vh;
+	  width: 100vw;
+	  background-size: contain;           /* ← MUESTRA LA IMAGEN COMPLETA */
+	  background-position: center center;
+	  background-repeat: no-repeat;
+	  background-color: #000;             /* ← Fondo negro por si hay bordes */
+	  position: relative;
+	  display: flex;
+	  flex-direction: column;
+	  justify-content: center;
+	  align-items: center;
+	  padding: 5vh 5vw;
+	  overflow: hidden;
+	}
 
     /* Fondos (9:16 - 1080x1920) */
     #fondo1 { background-image: url('fondo1.png'); }
@@ -634,3 +636,4 @@
   </script>
 </body>
 </html>
+
