@@ -24,37 +24,35 @@
 	  align-items: center;
 	  padding: 5vh 5vw;
 	  overflow: hidden;
+	  /* SIN background aquí */
 	}
 
-/* ====================== FONDOS FIJOS CON ::before ====================== */
+	/* ====================== FONDOS 1 Y 4: IMAGEN COMPLETA + FONDO BLANCO ====================== */
 	#fondo1::before,
-	#fondo2::before,
-	#fondo3::before,
 	#fondo4::before {
 	  content: '';
 	  position: absolute;
 	  top: 0; left: 0; right: 0; bottom: 0;
-	  background-size: cover;                    /* ← Usa cover para llenar */
-	  background-position: center center;
-	  background-repeat: no-repeat;
+	  background-size: contain !important;        /* ← IMAGEN COMPLETA */
+	  background-position: center center !important;
+	  background-repeat: no-repeat !important;
+	  background-color: #ffffff !important;        /* ← FONDO BLANCO */
 	  z-index: -1;
-	  filter: brightness(0.92);                  /* ← Suaviza un poco la imagen */
 	}
 
 	#fondo1::before { background-image: url('fondo1.png'); }
-	#fondo2::before { background-image: url('fondo2.png'); }
-	#fondo3::before { background-image: url('fondo3.png'); }
 	#fondo4::before { background-image: url('fondo4.png'); }
-	
-	@media (max-aspect-ratio: 10/16) {
-	  #fondo1::before,
-	  #fondo2::before,
-	  #fondo3::before,
-	  #fondo4::before {
-		background-size: contain;
-		background-color: white;
-	  }
+
+	/* ====================== FONDOS 2 Y 3: ESTILO CLÁSICO (sin ::before) ====================== */
+	#fondo2, #fondo3 {
+	  background-size: cover !important;
+	  background-position: center center !important;
+	  background-repeat: no-repeat !important;
+	  background-color: #000000 !important; /* ← Negro como antes */
 	}
+
+	#fondo2 { background-image: url('fondo2.png'); }
+	#fondo3 { background-image: url('fondo3.png'); }
 
     /* Clase para posicionar elementos manualmente */
     .posicionable {
@@ -87,7 +85,7 @@
 	  top: 21%;
 	  left: 65%;
 	  transform: translateX(-50%);
-	  font-size: 9vw;           /* ← MÁS PEQUEÑO para que quepa */
+	  font-size: 8.5vw;           /* ← MÁS PEQUEÑO para que quepa */
 	  font-weight: bold;
 	  font-family: 'Agbalumo', cursive;
 	  white-space: nowrap;        /* ← NO SALTA DE LÍNEA */
