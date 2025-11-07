@@ -17,10 +17,6 @@
     section {
 	  height: 100vh;
 	  width: 100vw;
-	  background-size: contain;           /* ← MUESTRA LA IMAGEN COMPLETA */
-	  background-position: center center;
-	  background-repeat: no-repeat;
-	  background-color: #000;             /* ← Fondo negro por si hay bordes */
 	  position: relative;
 	  display: flex;
 	  flex-direction: column;
@@ -30,11 +26,35 @@
 	  overflow: hidden;
 	}
 
-    /* Fondos (9:16 - 1080x1920) */
-    #fondo1 { background-image: url('fondo1.png'); }
-    #fondo2 { background-image: url('fondo2.png'); }
-    #fondo3 { background-image: url('fondo3.png'); }
-    #fondo4 { background-image: url('fondo4.png'); }
+/* ====================== FONDOS FIJOS CON ::before ====================== */
+	#fondo1::before,
+	#fondo2::before,
+	#fondo3::before,
+	#fondo4::before {
+	  content: '';
+	  position: absolute;
+	  top: 0; left: 0; right: 0; bottom: 0;
+	  background-size: cover;                    /* ← Usa cover para llenar */
+	  background-position: center center;
+	  background-repeat: no-repeat;
+	  z-index: -1;
+	  filter: brightness(0.92);                  /* ← Suaviza un poco la imagen */
+	}
+
+	#fondo1::before { background-image: url('fondo1.png'); }
+	#fondo2::before { background-image: url('fondo2.png'); }
+	#fondo3::before { background-image: url('fondo3.png'); }
+	#fondo4::before { background-image: url('fondo4.png'); }
+	
+	@media (max-aspect-ratio: 10/16) {
+	  #fondo1::before,
+	  #fondo2::before,
+	  #fondo3::before,
+	  #fondo4::before {
+		background-size: contain;
+		background-color: white;
+	  }
+	}
 
     /* Clase para posicionar elementos manualmente */
     .posicionable {
@@ -636,4 +656,3 @@
   </script>
 </body>
 </html>
-
