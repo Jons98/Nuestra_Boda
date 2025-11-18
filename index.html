@@ -65,10 +65,21 @@
       top: 73%; left: 9%; font-size: 7vw; font-weight: bold;
     }
     #nombreInvitado {
-      top: 80%; left: 45%; transform: translateX(-50%);
-      font-size: 8vw; font-weight: bold; white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis; max-width: 90%;
-    }
+	  position: absolute;
+	  top: 80%;
+	  left: 43.5%;
+	  transform: translateX(-43.5%);
+	  font-weight: bold;
+	  text-align: center;
+	  white-space: normal;
+	  overflow: visible;
+	  font-size: clamp(3vw, 6vmin, 6vw);
+	  max-width: 90vw;
+	  width: fit-content;
+	  padding: 0 2vw;
+	  line-height: 1.3;
+	}
+	
     #contador {
       top: 21%; left: 65%; transform: translateX(-50%);
       font-size: 9vw; font-weight: bold; font-family: 'Agbalumo', cursive;
@@ -474,7 +485,7 @@
 
     // INVITADO
     const urlParams = new URLSearchParams(window.location.search);
-    const invitadoID = urlParams.get('id') || 'fam1';
+    const invitadoID = urlParams.get('id') || 'fam4';
     const nombreEl = document.getElementById("nombreInvitado");
     let dataInvitado = {};
     async function cargarInvitado() {
