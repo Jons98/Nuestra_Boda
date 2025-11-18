@@ -536,60 +536,68 @@
 
     cargarInvitado();
 
-    // CONFIRMACIÓN – SOLO UNA VEZ POR INVITADO
-	const modal = document.getElementById("modalConfirmacion");
-	const select = document.getElementById("invitadosSelect");
-	const btnConfirmar = document.getElementById("btnConfirmar");
+    // CONFIRMACIÓN – SOLO UNA VEZ + GUARDA NOMBRE DE FAMILIA
+    const modal = document.getElementById("modalConfirmacion");
+    const select = document.getElementById("invitadosSelect");
+    const btnConfirmar = document.getElementById("btnConfirmar");
 
-	document.getElementById("btnConfirmar").addEventListener("click", async () => {
-	  // Primero verificamos si ya confirmó
-	  const confirmacionRef = doc(db, "confirmaciones", invitadoID);
-	  const confirmacionSnap = await getDoc(confirmacionRef);
+    // Al hacer click en "Confirmar Asistencia"
+    btnConfirmar.addEventListener("click", async () => {
+      // Verificamos si ya existe confirmación de esta familia
+      const confirmacionRef = doc(db, "confirmaciones", invitadoID);
+      const confirmacionSnap = await getDoc(confirmacionRef);
 
-	  if (confirmacionSnap.exists()) {
-		// YA CONFIRMÓ → mostramos mensaje y no abrimos el modal
-		alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
-		return;
-	  }
+      if (confirmacionSnap.exists()) {
+        alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
+        return;
+      }
 
-	  // Si aún no confirmó → abrimos el modal normalmente
-	  modal.style.display = "flex";
-	  modal.classList.add("show");
-	  select.innerHTML = "";
-	  const max = dataInvitado.maxInvitados || 1;
-	  for (let i = 1; i <= max; i++) {
-		const opt = document.createElement("option");
-		opt.value = i;
-		opt.textContent = i === 1 ? "1 Persona" : `${i} Personas`;
-		select.appendChild(opt);
-	  }
-	});
+      // Si aún no confirmó → abrimos el modal
+      modal.style.display = "flex";
+      modal.classList.add("show");
+      select.innerHTML = "";
 
-	// BOTÓN ENVIAR CONFIRMACIÓN
-	document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
-	  const cantidad = select.value;
+      const max = dataInvitado.maxInvitados || 1;
+      for (let i = 1; i <= max; i++) {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = i === 1 ? "1 Persona" : `${i} Personas`;
+        select.appendChild(opt);
+      }
+    });
 
-	  try {
-		// Guardamos la confirmación con el ID del invitado como nombre del documento
-		await setDoc(doc(db, "confirmaciones", invitadoID), {
-		  cantidad: Number(cantidad),
-		  nombre: dataInvitado.nombre || "Invitado",
-		  fecha: serverTimestamp()
-		});
+    // BOTÓN "Confirmar" dentro del modal
+    document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
+      const cantidad = select.value;
 
-		modal.style.display = "none";
-		
-		// Mensaje lindo + desactivamos el botón para siempre
-		alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
-		btnConfirmar.style.opacity = "0.6";
-		btnConfirmar.style.pointerEvents = "none";
-		btnConfirmar.querySelector("span").textContent = "¡Confirmado! ✓";
+      try {
+        // Guardamos la confirmación (ID del documento = ID de la familia)
+        await setDoc(doc(db, "confirmaciones", invitadoID), {
+          familiaID: invitadoID,
+          nombreFamilia: dataInvitado.nombre || "Invitado",
+          cantidad: Number(cantidad),
+          fecha: serverTimestamp()
+        });
 
-	  } catch (error) {
-		console.error("Error al confirmar:", error);
-		alert("Hubo un error. Por favor intentá de nuevo.");
-	  }
-	});
+        // Cerramos modal y mostramos éxito
+        modal.style.display = "none";
+        alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
+
+        // Cambiamos el botón para que quede como "confirmado"
+        btnConfirmar.style.opacity = "0.6";
+        btnConfirmar.style.pointerEvents = "none";
+        btnConfirmar.querySelector("span").textContent = "¡Confirmado! ✓";
+
+      } catch (error) {
+        console.error("Error al confirmar:", error);
+        alert("Hubo un error. Por favor intentá de nuevo.");
+      }
+    });
+
+    // Cerrar modal al hacer click afuera
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    });
   </script>
 </body>
 </html>
