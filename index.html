@@ -500,7 +500,7 @@
 
     // INVITADO
     const urlParams = new URLSearchParams(window.location.search);
-    const invitadoID = urlParams.get('id') || 'fam5';
+    const invitadoID = urlParams.get('id') || 'fam001';
     const nombreEl = document.getElementById("nombreInvitado");
     let dataInvitado = {};
 
@@ -555,42 +555,30 @@
     });
 
     document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
-  const cantidad = select.value;
+      const cantidad = select.value;
 
-  try {
-    const confirmacionRef = doc(db, "confirmaciones", invitadoID);
+      try {
+        // ← ESTA ES LA LÍNEA QUE TENÍAS ANTES Y QUE SÍ FUNCIONABA
+        await addDoc(collection(db, "confirmaciones"), {
+          invitadoID: invitadoID,
+          nombreFamilia: dataInvitado.nombre || "Invitado",
+          cantidad: Number(cantidad),
+          fecha: serverTimestamp()
+        });
 
-    // ← NUEVO: chequeamos si ya existe
-    const yaExiste = await getDoc(confirmacionRef);
-    if (yaExiste.exists()) {
-      modal.style.display = "none";
-      alert("¡Ya habías confirmado antes! Gracias por ser parte de nuestro día ❤️");
-      btnConfirmar.style.opacity = "0.6";
-      btnConfirmar.style.pointerEvents = "none";
-      btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-      return;
-    }
+        modal.style.display = "none";
+        alert("¡Gracias por confirmar! ❤️");
 
-    // ← Si no existe → guardamos con ID de familia (así queda ordenadito)
-    await setDoc(confirmacionRef, {
-      invitadoID: invitadoID,
-      nombreFamilia: dataInvitado.nombre || "Invitado",
-      cantidad: Number(cantidad),
-      fecha: serverTimestamp()
-    }, { merge: true });
+        // Esto es nuevo pero inofensivo: pone el botón en modo "ya confirmado"
+        btnConfirmar.style.opacity = "0.6";
+        btnConfirmar.style.pointerEvents = "none";
+        btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
 
-    modal.style.display = "none";
-    alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
-
-    btnConfirmar.style.opacity = "0.6";
-    btnConfirmar.style.pointerEvents = "none";
-    btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-
-  } catch (error) {
-    console.error("Error:", error);
-    alert("Hubo un error. Por favor intentá de nuevo.");
-  }
-});
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Hubo un error. Por favor intentá de nuevo.");
+      }
+    });
 
     modal.addEventListener("click", (e) => {
       if (e.target === modal) modal.style.display = "none";
@@ -598,4 +586,3 @@
   </script>
 </body>
 </html>
-
