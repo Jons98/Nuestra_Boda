@@ -536,12 +536,13 @@
 
     cargarInvitado();
 
-    // CONFIRMACIÓN – VERSIÓN QUE YA TE FUNCIONABA ANTES + UNOS MEJORITAS
+    // CONFIRMACIÓN – VERSIÓN FINAL 100% FUNCIONAL (ID = fam001, fam5, etc.)
     const modal = document.getElementById("modalConfirmacion");
     const select = document.getElementById("invitadosSelect");
     const btnConfirmar = document.getElementById("btnConfirmar");
 
-    btnConfirmar.addEventListener("click", () => {
+    btnConfirmar.addEventListener("click", async () => {
+      // Abrir modal y cargar opciones
       modal.style.display = "flex";
       modal.classList.add("show");
       select.innerHTML = "";
@@ -555,41 +556,41 @@
     });
 
     document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
-  const cantidad = select.value;
+      const cantidad = select.value;
 
-  try {
-  const confirmacionRef = doc(db, "confirmaciones", invitadoID);
+      try {
+        const confirmacionRef = doc(db, "confirmaciones", invitadoID);
 
-  // Chequeamos si ya existe
-  const snap = await getDoc(confirmacionRef);
-  if (snap.exists()) {
-    modal.style.display = "none";
-    alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
-    btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-    btnConfirmar.style.opacity = "0.6";
-    btnConfirmar.style.pointerEvents = "none";
-    return;
-  }
+        // Chequear si ya confirmó
+        const snap = await getDoc(confirmacionRef);
+        if (snap.exists()) {
+          modal.style.display = "none";
+          alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
+          btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
+          btnConfirmar.style.opacity = "0.6";
+          btnConfirmar.style.pointerEvents = "none";
+          return;
+        }
 
-  // ← AQUÍ ESTÁ LA MAGIA: { merge: true } permite crear aunque la regla solo diga "create"
-  await setDoc(confirmacionRef, {
-    invitadoID: invitadoID,
-    nombreFamilia: dataInvitado.nombre || "Invitado",
-    cantidad: Number(cantidad),
-    fecha: serverTimestamp()
-  }, { merge: true });
+        // GUARDAR CON ID = fam001, fam5, etc. (lo que querías)
+        await setDoc(confirmacionRef, {
+          invitadoID: invitadoID,
+          nombreFamilia: dataInvitado.nombre || "Invitado",
+          cantidad: Number(cantidad),
+          fecha: serverTimestamp()
+        }, { merge: true });   // ← esta línea es OBLIGATORIA
 
-  modal.style.display = "none";
-  alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
+        modal.style.display = "none";
+        alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
+        btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
+        btnConfirmar.style.opacity = "0.6";
+        btnConfirmar.style.pointerEvents = "none";
 
-  btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-  btnConfirmar.style.opacity = "0.6";
-  btnConfirmar.style.pointerEvents = "none";
-
-} catch (error) {
-  console.error("Error:", error);
-  alert("Hubo un error. Por favor intentá de nuevo.");
-}
+      } catch (error) {
+        console.error("Error al confirmar:", error);
+        alert("Hubo un error. Por favor intentá de nuevo.");
+      }
+    });
 
     modal.addEventListener("click", (e) => {
       if (e.target === modal) modal.style.display = "none";
@@ -597,5 +598,6 @@
   </script>
 </body>
 </html>
+
 
 
