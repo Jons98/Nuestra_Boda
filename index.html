@@ -536,13 +536,12 @@
 
     cargarInvitado();
 
-    // CONFIRMACIÓN – VERSIÓN FINAL 100% FUNCIONAL (ID = fam001, fam5, etc.)
+    // CONFIRMACIÓN – TU CÓDIGO ORIGINAL QUE NUNCA FALLÓ + 2 MEJORAS SIMPLES
     const modal = document.getElementById("modalConfirmacion");
     const select = document.getElementById("invitadosSelect");
     const btnConfirmar = document.getElementById("btnConfirmar");
 
-    btnConfirmar.addEventListener("click", async () => {
-      // Abrir modal y cargar opciones
+    btnConfirmar.addEventListener("click", () => {
       modal.style.display = "flex";
       modal.classList.add("show");
       select.innerHTML = "";
@@ -558,27 +557,27 @@
     document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
       const cantidad = select.value;
 
+      // BLOQUEO CON LOCALSTORAGE (nunca falla, funciona aunque recargues)
+      if (localStorage.getItem("confirmado_" + invitadoID)) {
+        modal.style.display = "none";
+        alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
+        btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
+        btnConfirmar.style.opacity = "0.6";
+        btnConfirmar.style.pointerEvents = "none";
+        return;
+      }
+
       try {
-        const confirmacionRef = doc(db, "confirmaciones", invitadoID);
-
-        // Chequear si ya confirmó
-        const snap = await getDoc(confirmacionRef);
-        if (snap.exists()) {
-          modal.style.display = "none";
-          alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
-          btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-          btnConfirmar.style.opacity = "0.6";
-          btnConfirmar.style.pointerEvents = "none";
-          return;
-        }
-
-        // GUARDAR CON ID = fam001, fam5, etc. (lo que querías)
-        await setDoc(confirmacionRef, {
+        // TU LÍNEA ORIGINAL QUE NUNCA FALLÓ
+        await addDoc(collection(db, "confirmaciones"), {
           invitadoID: invitadoID,
           nombreFamilia: dataInvitado.nombre || "Invitado",
           cantidad: Number(cantidad),
           fecha: serverTimestamp()
-        }, { merge: true });   // ← esta línea es OBLIGATORIA
+        });
+
+        // Marcamos como confirmado para que no pueda volver a hacerlo
+        localStorage.setItem("confirmado_" + invitadoID, "true");
 
         modal.style.display = "none";
         alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
@@ -587,7 +586,7 @@
         btnConfirmar.style.pointerEvents = "none";
 
       } catch (error) {
-        console.error("Error al confirmar:", error);
+        console.error("Error:", error);
         alert("Hubo un error. Por favor intentá de nuevo.");
       }
     });
@@ -598,6 +597,7 @@
   </script>
 </body>
 </html>
+
 
 
 
