@@ -557,27 +557,27 @@
     document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
   const cantidad = select.value;
 
-  // 1. Bloqueamos con localStorage (nunca falla)
-  if (localStorage.getItem(`confirmado_${invitadoID}`)) {
-    modal.style.display = "none";
-    alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
-    btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-    btnConfirmar.style.opacity = "0.6";
-    btnConfirmar.style.pointerEvents = "none";
-    return;
-  }
-
   try {
-    // 2. Tu addDoc original que NUNCA falla
-    await addDoc(collection(db, "confirmaciones"), {
+    const confirmacionRef = doc(db, "confirmaciones", invitadoID);  // ← ID = fam001, fam5, etc.
+
+    // Chequeamos si ya existe (usa tu regla de !exists)
+    const snap = await getDoc(confirmacionRef);
+    if (snap.exists()) {
+      modal.style.display = "none";
+      alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
+      btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
+      btnConfirmar.style.opacity = "0.6";
+      btnConfirmar.style.pointerEvents = "none";
+      return;
+    }
+
+    // Guardamos con ID personalizado (tu regla lo permite si no existe)
+    await setDoc(confirmacionRef, {
       invitadoID: invitadoID,
       nombreFamilia: dataInvitado.nombre || "Invitado",
       cantidad: Number(cantidad),
       fecha: serverTimestamp()
     });
-
-    // 3. Marcamos como confirmado para siempre
-    localStorage.setItem(`confirmado_${invitadoID}`, "true");
 
     modal.style.display = "none";
     alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
@@ -598,3 +598,4 @@
   </script>
 </body>
 </html>
+
