@@ -558,39 +558,38 @@
   const cantidad = select.value;
 
   try {
-    const confirmacionRef = doc(db, "confirmaciones", invitadoID);  // ← ID = fam001, fam5, etc.
+  const confirmacionRef = doc(db, "confirmaciones", invitadoID);
 
-    // Chequeamos si ya existe (usa tu regla de !exists)
-    const snap = await getDoc(confirmacionRef);
-    if (snap.exists()) {
-      modal.style.display = "none";
-      alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
-      btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-      btnConfirmar.style.opacity = "0.6";
-      btnConfirmar.style.pointerEvents = "none";
-      return;
-    }
-
-    // Guardamos con ID personalizado (tu regla lo permite si no existe)
-    await setDoc(confirmacionRef, {
-      invitadoID: invitadoID,
-      nombreFamilia: dataInvitado.nombre || "Invitado",
-      cantidad: Number(cantidad),
-      fecha: serverTimestamp()
-    });
-
+  // Chequeamos si ya existe
+  const snap = await getDoc(confirmacionRef);
+  if (snap.exists()) {
     modal.style.display = "none";
-    alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
-
+    alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
     btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
     btnConfirmar.style.opacity = "0.6";
     btnConfirmar.style.pointerEvents = "none";
-
-  } catch (error) {
-    console.error("Error:", error);
-    alert("Hubo un error. Por favor intentá de nuevo.");
+    return;
   }
-});
+
+  // ← AQUÍ ESTÁ LA MAGIA: { merge: true } permite crear aunque la regla solo diga "create"
+  await setDoc(confirmacionRef, {
+    invitadoID: invitadoID,
+    nombreFamilia: dataInvitado.nombre || "Invitado",
+    cantidad: Number(cantidad),
+    fecha: serverTimestamp()
+  }, { merge: true });
+
+  modal.style.display = "none";
+  alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
+
+  btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
+  btnConfirmar.style.opacity = "0.6";
+  btnConfirmar.style.pointerEvents = "none";
+
+} catch (error) {
+  console.error("Error:", error);
+  alert("Hubo un error. Por favor intentá de nuevo.");
+}
 
     modal.addEventListener("click", (e) => {
       if (e.target === modal) modal.style.display = "none";
@@ -598,4 +597,5 @@
   </script>
 </body>
 </html>
+
 
