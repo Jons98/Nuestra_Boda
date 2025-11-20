@@ -485,15 +485,14 @@
 
     // FIREBASE
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import {
-  getFirestore,
-  collection,
-  addDoc,
-  serverTimestamp,
-  query,
-  where,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    collection,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
    
     const firebaseConfig = {
       apiKey: "AIzaSyCH6S96lGMbUManPhCkXqHFQGPCdJ_7hkg",
@@ -546,84 +545,91 @@
 
     // CONFIRMACIÓN
     const modal = document.getElementById("modalConfirmacion");
-const select = document.getElementById("invitadosSelect");
-const btnConfirmar = document.getElementById("btnConfirmar");
-
-// Función para verificar si ya confirmó
-async function yaConfirmo() {
-  if (!invitadoID) return true;
-
-  const q = query(
-    collection(db, "confirmaciones"),
-    where("invitadoID", "==", invitadoID)
-  );
-
-  const snap = await getDocs(q);
-  return !snap.empty; // true = ya confirmó
-}
-
-// Al cargar la página → chequeamos si ya confirmó
-window.addEventListener("load", async () => {
-  if (await yaConfirmo()) {
-    btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-    btnConfirmar.style.opacity = "0.6";
-    btnConfirmar.style.pointerEvents = "none";
-  }
-});
-
-// Abrir modal
-btnConfirmar.addEventListener("click", async () => {
-  if (await yaConfirmo()) {
-    alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
-    return;
-  }
-
-  modal.style.display = "flex";
-  modal.classList.add("show");
-  select.innerHTML = "";
-
-  const max = dataInvitado.maxInvitados || 1;
-
-  for (let i = 1; i <= max; i++) {
-    const opt = document.createElement("option");
-    opt.value = i;
-    opt.textContent = i === 1 ? "1 Persona" : `${i} Personas`;
-    select.appendChild(opt);
-  }
-});
-
-// Enviar confirmación
-document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
-  const cantidad = select.value;
-
-  try {
-    await addDoc(collection(db, "confirmaciones"), {
-      invitadoID: invitadoID,
-      nombreFamilia: dataInvitado.nombre || "Invitado",
-      cantidad: Number(cantidad),
-      fecha: serverTimestamp()
-    });
-
-    modal.style.display = "none";
-    alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
-
-    btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-    btnConfirmar.style.opacity = "0.6";
-    btnConfirmar.style.pointerEvents = "none";
-
-  } catch (error) {
-    console.error("Error:", error);
-    alert("Hubo un error. Por favor intentá de nuevo.");
-  }
-});
-
-// Cerrar modal al hacer click afuera
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) modal.style.display = "none";
-});
+	const select = document.getElementById("invitadosSelect");
+	const btnConfirmar = document.getElementById("btnConfirmar");
+	
+	// Verificar si ya confirmó usando el ID personalizado (fam001, fam002...)
+	async function yaConfirmo() {
+	  if (!invitadoID) return true;
+	  const docRef = doc(db, "confirmaciones", invitadoID);
+	  const snap = await getDoc(docRef);
+	  return snap.exists();
+	}
+	
+	// Al cargar la página → bloquear botón si ya confirmó
+	window.addEventListener("load", async () => {
+	  if (await yaConfirmo()) {
+	    btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
+	    btnConfirmar.style.opacity = "0.6";
+	    btnConfirmar.style.pointerEvents = "none";
+	  }
+	});
+	
+	// Abrir modal
+	btnConfirmar.addEventListener("click", async () => {
+	  if (await yaConfirmo()) {
+	    alert("¡Ya confirmaste tu asistencia! ❤️");
+	    return;
+	  }
+	
+	  modal.style.display = "flex";
+	  modal.classList.add("show");
+	
+	  select.innerHTML = "";
+	  const max = dataInvitado.maxInvitados || 1;
+	
+	  for (let i = 1; i <= max; i++) {
+	    const opt = document.createElement("option");
+	    opt.value = i;
+	    opt.textContent = i === 1 ? "1 Persona" : `${i} Personas`;
+	    select.appendChild(opt);
+	  }
+	});
+	
+	// Enviar confirmación — usando el mismo ID que la familia
+	document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
+	  const cantidad = Number(select.value);
+	
+	  try {
+	    const confirmacionRef = doc(db, "confirmaciones", invitadoID);
+	
+	    // Seguridad extra
+	    if ((await getDoc(confirmacionRef)).exists()) {
+	      alert("¡Ya confirmaste!");
+	      modal.style.display = "none";
+	      return;
+	    }
+	
+	    // Guardar documento con ID famXXX
+	    await setDoc(confirmacionRef, {
+	      invitadoID: invitadoID,
+	      nombreFamilia: dataInvitado.nombre || "Invitado",
+	      cantidad: cantidad,
+	      fecha: serverTimestamp()
+	    });
+	
+	    modal.style.display = "none";
+	    alert("¡Confirmación recibida con éxito! ❤️");
+	
+	    // Actualizar botón
+	    btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
+	    btnConfirmar.style.opacity = "0.6";
+	    btnConfirmar.style.pointerEvents = "none";
+	
+	  } catch (error) {
+	    console.error("Error al guardar:", error);
+	    alert("Ocurrió un error. Intentá de nuevo.");
+	  }
+	});
+	
+	// Cerrar modal si hacen click afuera
+	modal.addEventListener("click", (e) => {
+	  if (e.target === modal) modal.style.display = "none";
+	});
   </script>
 </body>
 </html>
+
 
 
 
