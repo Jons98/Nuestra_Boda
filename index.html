@@ -541,16 +541,22 @@
     const select = document.getElementById("invitadosSelect");
     const btnConfirmar = document.getElementById("btnConfirmar");
 
-    // === AL CARGAR LA PÁGINA: si ya confirmó, mostrar botón como confirmado ===
+    // AL CARGAR LA PÁGINA: chequeamos si YA EXISTE en Firebase
     window.addEventListener("load", async () => {
-      if (localStorage.getItem("confirmado_" + invitadoID)) {
-        btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-        btnConfirmar.style.opacity = "0.6";
-        btnConfirmar.style.pointerEvents = "none";
-      }
+      try {
+        const q = query(collection(db, "confirmaciones"), where("invitadoID", "==", invitadoID));
+        const querySnap = await getDocs(q);
+        
+        if (!querySnap.empty) {
+          // Ya existe → bloqueamos el botón
+          btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
+          btnConfirmar.style.opacity = "0.6";
+          btnConfirmar.style.pointerEvents = "none";
+        }
+      } catch (e) { console.log("Error chequeando confirmación:", e); }
     });
 
-    // === ABRIR EL MODAL === 
+    // ABRIR MODAL
     btnConfirmar.addEventListener("click", () => {
       modal.style.display = "flex";
       modal.classList.add("show");
@@ -564,7 +570,7 @@
       }
     });
 
-    // === BOTÓN ENVIAR CONFIRMACIÓN ===
+    // ENVIAR CONFIRMACIÓN
     document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
       const cantidad = select.value;
 
@@ -576,30 +582,26 @@
           fecha: serverTimestamp()
         });
 
-        // Guardamos en localStorage SOLO DESPUÉS de confirmar con éxito
-        localStorage.setItem("confirmado_" + invitadoID, "true");
-
         modal.style.display = "none";
         alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
 
-        // Cambiar botón inmediatamente
         btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
         btnConfirmar.style.opacity = "0.6";
         btnConfirmar.style.pointerEvents = "none";
 
       } catch (error) {
-        console.error("Error al confirmar:", error);
+        console.error("Error:", error);
         alert("Hubo un error. Por favor intentá de nuevo.");
       }
     });
 
-    // Cerrar modal al hacer click afuera
     modal.addEventListener("click", (e) => {
       if (e.target === modal) modal.style.display = "none";
     });
   </script>
 </body>
 </html>
+
 
 
 
