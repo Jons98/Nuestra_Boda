@@ -485,7 +485,15 @@
 
     // FIREBASE
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+    import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
    
     const firebaseConfig = {
       apiKey: "AIzaSyCH6S96lGMbUManPhCkXqHFQGPCdJ_7hkg",
@@ -538,69 +546,85 @@
 
     // CONFIRMACIÓN
     const modal = document.getElementById("modalConfirmacion");
-    const select = document.getElementById("invitadosSelect");
-    const btnConfirmar = document.getElementById("btnConfirmar");
+const select = document.getElementById("invitadosSelect");
+const btnConfirmar = document.getElementById("btnConfirmar");
 
-    // AL CARGAR LA PÁGINA: chequeamos si YA EXISTE en Firebase
-    window.addEventListener("load", async () => {
-      try {
-        const q = query(collection(db, "confirmaciones"), where("invitadoID", "==", invitadoID));
-        const querySnap = await getDocs(q);
-        
-        if (!querySnap.empty) {
-          // Ya existe → bloqueamos el botón
-          btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-          btnConfirmar.style.opacity = "0.6";
-          btnConfirmar.style.pointerEvents = "none";
-        }
-      } catch (e) { console.log("Error chequeando confirmación:", e); }
+// Función para verificar si ya confirmó
+async function yaConfirmo() {
+  if (!invitadoID) return true;
+
+  const q = query(
+    collection(db, "confirmaciones"),
+    where("invitadoID", "==", invitadoID)
+  );
+
+  const snap = await getDocs(q);
+  return !snap.empty; // true = ya confirmó
+}
+
+// Al cargar la página → chequeamos si ya confirmó
+window.addEventListener("load", async () => {
+  if (await yaConfirmo()) {
+    btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
+    btnConfirmar.style.opacity = "0.6";
+    btnConfirmar.style.pointerEvents = "none";
+  }
+});
+
+// Abrir modal
+btnConfirmar.addEventListener("click", async () => {
+  if (await yaConfirmo()) {
+    alert("¡Ya confirmaste tu asistencia! Gracias ❤️");
+    return;
+  }
+
+  modal.style.display = "flex";
+  modal.classList.add("show");
+  select.innerHTML = "";
+
+  const max = dataInvitado.maxInvitados || 1;
+
+  for (let i = 1; i <= max; i++) {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = i === 1 ? "1 Persona" : `${i} Personas`;
+    select.appendChild(opt);
+  }
+});
+
+// Enviar confirmación
+document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
+  const cantidad = select.value;
+
+  try {
+    await addDoc(collection(db, "confirmaciones"), {
+      invitadoID: invitadoID,
+      nombreFamilia: dataInvitado.nombre || "Invitado",
+      cantidad: Number(cantidad),
+      fecha: serverTimestamp()
     });
 
-    // ABRIR MODAL
-    btnConfirmar.addEventListener("click", () => {
-      modal.style.display = "flex";
-      modal.classList.add("show");
-      select.innerHTML = "";
-      const max = dataInvitado.maxInvitados || 1;
-      for (let i = 1; i <= max; i++) {
-        const opt = document.createElement("option");
-        opt.value = i;
-        opt.textContent = i === 1 ? "1 Persona" : `${i} Personas`;
-        select.appendChild(opt);
-      }
-    });
+    modal.style.display = "none";
+    alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
 
-    // ENVIAR CONFIRMACIÓN
-    document.getElementById("btnEnviarConfirmacion").addEventListener("click", async () => {
-      const cantidad = select.value;
+    btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
+    btnConfirmar.style.opacity = "0.6";
+    btnConfirmar.style.pointerEvents = "none";
 
-      try {
-        await addDoc(collection(db, "confirmaciones"), {
-          invitadoID: invitadoID,
-          nombreFamilia: dataInvitado.nombre || "Invitado",
-          cantidad: Number(cantidad),
-          fecha: serverTimestamp()
-        });
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Hubo un error. Por favor intentá de nuevo.");
+  }
+});
 
-        modal.style.display = "none";
-        alert("¡Confirmación recibida con éxito! Gracias por ser parte de nuestro día ❤️");
-
-        btnConfirmar.querySelector("span").textContent = "Confirmado ✓";
-        btnConfirmar.style.opacity = "0.6";
-        btnConfirmar.style.pointerEvents = "none";
-
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Hubo un error. Por favor intentá de nuevo.");
-      }
-    });
-
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) modal.style.display = "none";
-    });
+// Cerrar modal al hacer click afuera
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) modal.style.display = "none";
+});
   </script>
 </body>
 </html>
+
 
 
 
